@@ -41,7 +41,7 @@ public class Controller {
                 viewer.displayMenu("e. Exit, s. Place order, lo. Log out, b. Basket");
             }
 
-            String option = reader.getStringFromUser();
+            String option = reader.getStringFromUser("Choose menu option");
             switch(option) {
                 case "e":
                     exitApp = true;
