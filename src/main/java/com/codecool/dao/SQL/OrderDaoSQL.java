@@ -80,6 +80,7 @@ public class OrderDaoSQL implements OrderDao {
 
                     int orderQuantity = orderDetails.getInt("productQuantity");
                     Date date = orderDetails.getDate("date");
+                    order.setDate(date);
 
                     Product product = new Product(pid, name, amount, price, status, category);
                     OrderDetail orderDetail = new OrderDetail(product, orderQuantity);
