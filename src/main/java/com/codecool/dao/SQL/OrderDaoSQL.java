@@ -19,7 +19,8 @@ public class OrderDaoSQL implements OrderDao {
 
         Connection connection = DatabaseConnection.getConntectionToDatabase();
         try {
-            PreparedStatement stmt = connection.prepareStatement("INSERT INTO orders (userId, statusName) values (?, ?)");
+            PreparedStatement stmt = connection.prepareStatement(
+                    "INSERT INTO orders (userId, statusName) values (?, ?)");
             stmt.setInt(1, basket.getUserId());
             stmt.setString(2, "submit");
             stmt.executeUpdate();
@@ -31,7 +32,8 @@ public class OrderDaoSQL implements OrderDao {
             }
 
             for(OrderDetail detail: basket.getOrderDetails()) {
-                stmt = connection.prepareStatement("INSERT INTO ordersDetails (productId, productQuantity, orderId) values (?, ?, ?)");
+                stmt = connection.prepareStatement(
+                        "INSERT INTO ordersDetails (productId, productQuantity, orderId) values (?, ?, ?)");
                 stmt.setInt(1, detail.getProduct().getProductId());
                 stmt.setInt(2, detail.getQuantity());
                 stmt.setInt(3, orderId);
@@ -48,14 +50,19 @@ public class OrderDaoSQL implements OrderDao {
 
         Connection connection = DatabaseConnection.getConntectionToDatabase();
         try {
-            PreparedStatement getUserOrders = connection.prepareStatement("SELECT oid FROM orders WHERE userId = ?");
+            PreparedStatement getUserOrders = connection.prepareStatement(
+                    "SELECT oid FROM orders WHERE userId = ?");
             getUserOrders.setInt(1, userId);
             ResultSet userOrders = getUserOrders.executeQuery();
             while(userOrders.next()) {
                 int oid = userOrders.getInt("id");
                 Order order = new Order(oid);
 
-                PreparedStatement stmt = connection.prepareStatement("SELECT orders.oid, products.pid, products.name, products.quantity, products.price, products.status, products.categoryId, ordersDetails.productQuantity FROM orders JOIN ordersDetails ON orders.oid = ordersDetails.orderId JOIN products ON ordersDetails.productId = products.pid WHERE userId = ? AND oid = ?");
+                PreparedStatement stmt = connection.prepareStatement(
+                        "SELECT orders.oid, products.pid, products.name, products.quantity, products.price, " +
+                                "products.status, products.categoryId, ordersDetails.productQuantity FROM orders " +
+                                "JOIN ordersDetails ON orders.oid = ordersDetails.orderId JOIN products ON " +
+                                "ordersDetails.productId = products.pid WHERE userId = ? AND oid = ?");
                 stmt.setInt(1, userId);
                 stmt.setInt(2, oid);
                 ResultSet orderDetails = stmt.executeQuery();
