@@ -3,6 +3,8 @@ package com.codecool;
 import com.codecool.controller.Controller;
 
 public class OnlineShop {
-    Controller controller = new Controller();
-    controller.runner();
+    public static void main(String[] args) {
+        Controller controller = new Controller();
+        controller.runner();
+    }
 }
