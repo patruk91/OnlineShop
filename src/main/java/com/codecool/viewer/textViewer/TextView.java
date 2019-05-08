@@ -27,4 +27,10 @@ public class TextView implements View {
     public void displayMenu(String menu) {
         System.out.println(menu);
     }
+
+    @Override
+    public void clearScrean() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
 }

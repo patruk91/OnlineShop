@@ -6,4 +6,5 @@ public interface View {
     void displayError(String error);
     void displayTable(String table);
     void displayMenu(String menu);
+    void clearScrean();
 }
