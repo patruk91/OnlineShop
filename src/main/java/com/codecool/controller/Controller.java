@@ -65,6 +65,7 @@ public class Controller {
                     login.controller(userId, basket);
                 case "r":
                     Register register = new Register(reader, viewer, inputValidator, userDao);
+                    register.controller();
             }
         }
     }
