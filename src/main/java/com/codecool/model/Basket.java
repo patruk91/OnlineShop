@@ -30,6 +30,10 @@ public class Basket {
 
     @Override
     public String toString() {
-        return "UserId: " + userId + super.toString();
+        StringBuilder sb = new StringBuilder();
+        for (OrderDetail orderDetail : orderDetails) {
+            sb.append(String.format("%s %d \n", orderDetail.getProduct().toString(), orderDetail.getQuantity()));
+        }
+        return "UserId: " + userId + sb.toString();
     }
 }
