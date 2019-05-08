@@ -33,7 +33,7 @@ public class Controller {
     public void runner() {
         boolean exitApp = false;
         while(!exitApp) {
-            viewer.clearScrean();
+            viewer.clearScreen();
 
             if(userId == 0) {
                 viewer.displayMenu("e. Exit, s. Show products, li. Login, r. Register");
