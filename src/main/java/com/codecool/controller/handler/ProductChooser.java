@@ -1,4 +1,4 @@
 package com.codecool.controller.handler;
 
-public class ProductDisplayer {
+public class ProductChooser {
 }

@@ -15,11 +15,15 @@ runner() {
         displayMenu(userId) - (e. Exit, s. Show products, li. Login, r.Register, - if not login)
                               (e. Exit, s. Place order, lo. Log out, b. go to Basket - if logged)
 
-        option = displayQuestionWhichOption()
+        option = reader.getInput();
         switch(option) {
             s:
-                ProductDisplayer - package handler
-                productDisplayer.controller()
+                if(user login){
+                    ProductChooser - no basket
+                } else {
+                    ProductChooser - constructor with basket
+                }
+                productChooser.controller()
             li:
             lo:
                 Logger - package handler
@@ -40,13 +44,16 @@ runner() {
 
 clearScreen()
 displayMenu(userType)
-displayQuestionWhichOption()
 
 
 ///////////////////////////////////////////////
-ProductDisplayer
-ProductDisplayer(Reader, Viewer, InputValidator, ProductDaoSQL - interface) {
-    List<Products>; - only initialize
+ProductChooser
+ProductChooser(Reader, Viewer, InputValidator, ProductDao,) {
+    List<Product>; - only initialize
+}ProductChooser(Reader, Viewer, InputValidator, ProductDao, basket) {
+    this(Reader, Viewer, InputValidator, ProductDao,)
+    basket = basket;
+    List<Product>; - only initialize
 }
 
 controller {
@@ -57,18 +64,19 @@ controller {
 
 
     while (backToMenu) {
-        option = displayQuestionWhichOption()
+        option = reader.getInput();
         switch(option) {
             1:
                 mainMenu()
+                backToMenu = false;
             2:
                 TreeMap<Integer, String> categories = productDaoSQL.getCategories()
                 displayCategories(categories)
-                category = displayQuestionWhichCategory()
+                category = reader.displayQuestionWhichCategory()
                 List<Products> = getProductsFromDatabase(categoryId)
                 displayProducts(List<Product>)
             3:
-                name = enterProductName()
+                name = reader.enterProductName()
                 List<Products> = getProductsFromDatabase(product)
                 displayProducts(List<Product>)
             4:
@@ -76,21 +84,19 @@ controller {
                 displayProducts(List<Product>)
             5:
                 if userId != 0 {
-                    addProductToBasket(id) - in basket only add id and quantity, name,
+                    addProductToBasket(priductIndex, quantity) - in basket only add id and quantity, name,
                                              not object
                 }
 
             default:
                 No option available!
-
-
     }
 }
 
 displayMenu()
 displayCategories(categories)
 displayProducts(List<Product>)
-enterProductName()
+addProductToBasket(id) - check if amount of product available.
 
 ///////////////////////////////////////////////
 Logger
@@ -118,40 +124,40 @@ Register
 Register(Reader, Viewer, InputValidator, UserDaoSQL - interface)
 
 controller() {
-    login = getUserLogin()
-    password = getUserPassword()
+    login = reader.getUserLogin()
+    password = reder.getUserPassword()
 
-    userDaoSQL.createUser(user: User) -add simple User constructor login/password
+    if(!checkIfUserLoginExist(login);) {
+        userDaoSQL.createUser(user: User) -add simple User constructor login/password
+    }
 }
-getUserLogin()
-getUserPassword()
+checkIfUserLoginExist(login);
 
 ///////////////////////////////////////////////
-Basket
-Basket(Reader, Viewer, InputValidator, OrderDaoSQL - interface)
+BasketOperator
+BasketOperator(Reader, Viewer, InputValidator, OrderDao, PdoductDao)
 
 controller(basket) {
-    displayBasket()
+    displayBasket(basket)
     displayMenu() (1. mainMenu 2. Edit quantity 3. Confirm order)
 
     while (backToMenu) {
-        option = askUserAboutOption()
+        option = reader.askUserAboutOption()
         switch(option) {
             1:
                 mainMenu()
+                backToMenu = false;
             2:
-                editQuantity()
+                editQuantity(basket)
             3:
-                confirmOrder()
+                confirmOrder(basket)
             default:
                 No option available!
         }
     }
 }
 
-displayBasket()
 displayMenu()
-askUserAboutOption()
-mainMenu()
-editQuantity()
+displayBasket()
+editQuantity() - check if new amount is in store
 confirmOrder()
