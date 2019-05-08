@@ -1,5 +1,9 @@
 package com.codecool.controller;
 
+import com.codecool.controller.handler.BasketOperator;
+import com.codecool.controller.handler.Login;
+import com.codecool.controller.handler.ProductChooser;
+import com.codecool.controller.handler.Register;
 import com.codecool.dao.UserDao;
 import com.codecool.dao.OrderDao;
 import com.codecool.dao.ProductDao;
@@ -29,7 +33,30 @@ public class Controller {
     public void runner() {
         boolean exitApp = false;
         while(!exitApp) {
+            viewer.clearScrean();
+            String option = reader.getStringFromUser();
+            switch(option) {
+                case "e":
+                    exitApp = true;
+                    break;
+                case "s":
+                    ProductChooser productChooser = null;
 
+                    if(userId == 0) {
+                        productChooser = new ProductChooser(reader, viewer, inputValidator, productDao);
+                    } else {
+                        productChooser = new ProductChooser(reader, viewer, inputValidator, productDao, basket);
+                    }
+                    productChooser.productController();
+                case "b":
+                    BasketOperator basketOperator = new BasketOperator(reader, viewer, inputValidator, orderDao, productDao);
+                    basketOperator.controller();
+                case "li":
+                case "lo":
+                    Login login = new Login(reader, viewer, inputValidator, userDao);
+                case "r":
+                    Register register = new Register(reader, viewer, inputValidator, userDao);
+            }
         }
     }
 }
