@@ -66,6 +66,8 @@ public class Controller {
                 case "r":
                     Register register = new Register(reader, viewer, inputValidator, userDao);
                     register.controller();
+                default:
+                    viewer.displayError("Please, provide correct data");
             }
         }
     }
