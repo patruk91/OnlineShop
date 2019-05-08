@@ -5,7 +5,7 @@ Controller() {
     new View
     new InputValidator
     new Reader(View, InputValidator)
-    new int userId = 0;
+    new int userId = 2;
     private Basket; - without initialization
 }
 
