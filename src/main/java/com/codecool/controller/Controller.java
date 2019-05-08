@@ -27,7 +27,7 @@ public class Controller {
     private Basket basket;
 
     public Controller() {
-        userId = 0;
+        userId = 2;
     }
 
     public void runner() {
