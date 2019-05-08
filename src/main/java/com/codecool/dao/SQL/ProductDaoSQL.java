@@ -48,7 +48,7 @@ public class ProductDaoSQL implements ProductDao {
 
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
-                int productId = resultSet.getInt("id");
+                int productId = resultSet.getInt("pid");
                 String name = resultSet.getString("name");
                 int quantity = resultSet.getInt("quantity");
                 double price = resultSet.getDouble("price");
@@ -67,8 +67,46 @@ public class ProductDaoSQL implements ProductDao {
     }
 
     @Override
-    public void updateProduct(Product product) {
+    public void updateProduct(Product product, String column) {
+        Connection connection = DatabaseConnection.getConntectionToDatabase();
 
+        try {
+            PreparedStatement stmt = connection.prepareStatement(
+                    "UPDATE products set ?=? where ID=?");
+            stmt.setString(1, column);
+            updateDataForProduct(product, column, stmt);
+            stmt.setInt(3, product.getProductId());
+            stmt.executeUpdate();
+
+            stmt.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateDataForProduct(Product product, String column, PreparedStatement stmt) {
+        try {
+            switch (column) {
+                case "name":
+                    stmt.setString(2, product.getName());
+                    break;
+                case "quantity":
+                    stmt.setInt(2, product.getAmount());
+                    break;
+                case "price":
+                    stmt.setDouble(2, product.getPrice());
+                    break;
+                case "status":
+                    stmt.setBoolean(2, product.isStatus());
+                    break;
+                case "categoryId":
+                    stmt.setInt(2, product.getProductId());
+                    break;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
