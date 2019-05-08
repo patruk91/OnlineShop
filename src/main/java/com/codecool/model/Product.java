@@ -1,18 +1,24 @@
 package com.codecool.model;
 
 public class Product {
+    private int productId;
     private String name;
     private int amount;
     private double price;
     private boolean status;
     private int categoryId;
 
-    public Product(String name, int amount, double price, boolean status, int categoryId) {
+    public Product(int productId, String name, int amount, double price, boolean status, int categoryId) {
+        this.productId = productId;
         this.name = name;
         this.amount = amount;
         this.price = price;
         this.status = status;
         this.categoryId = categoryId;
+    }
+
+    public int getProductId() {
+        return productId;
     }
 
     public void setName(String name) {
