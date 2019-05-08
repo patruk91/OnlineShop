@@ -29,7 +29,7 @@ public class TextView implements View {
     }
 
     @Override
-    public void clearScrean() {
+    public void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
