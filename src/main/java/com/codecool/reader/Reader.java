@@ -10,8 +10,8 @@ public class Reader {
     private View view;
     private InputValidator inputValidator;
 
-    public Reader(Scanner scanner, View view, InputValidator inputValidator) {
-        this.scanner = scanner;
+    public Reader(View view, InputValidator inputValidator) {
+        this.scanner = new Scanner(System.in);
         this.view = view;
         this.inputValidator = inputValidator;
     }
@@ -42,10 +42,9 @@ public class Reader {
                     return result;
                 }
             } else {
-                view.printError("Please, provide correct data");
+                view.displayError("Please, provide correct data");
             }
         }
-        return result;
     }
 
     public double getNumberInRange(double start, double end) {
@@ -58,10 +57,9 @@ public class Reader {
                     return result;
                 }
             } else {
-                view.printError("Please, provide correct data");
+                view.displayError("Please, provide correct data");
             }
         }
-        return result;
     }
 
 
