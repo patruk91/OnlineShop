@@ -88,6 +88,16 @@ public class OrderDaoSQL implements OrderDao {
 
     @Override
     public void deleteOrder(Order order) {
+        Connection connection = DatabaseConnection.getConntectionToDatabase();
+        try {
+            PreparedStatement removeOrder = connection.prepareStatement("DELETE FROM orders WHERE oid = ?");
+            removeOrder.setInt(1, order.getOrderId());
 
+            removeOrder = connection.prepareStatement("DELETE FROM ordersDetails WHERE orderId = ?");
+            removeOrder.setInt(1, order.getOrderId());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
