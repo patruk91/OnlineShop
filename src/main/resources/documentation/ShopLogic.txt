@@ -1,0 +1,157 @@
+Controller() {
+    new UserDaoSQL
+    new ProductDaoSQL
+    new OrderDaoSQL
+    new View
+    new InputValidator
+    new Reader(View, InputValidator)
+    new int userId = 0;
+    private Basket; - without initialization
+}
+
+runner() {
+    while (exitApp) {
+        clearScreen()
+        displayMenu(userId) - (e. Exit, s. Show products, li. Login, r.Register, - if not login)
+                              (e. Exit, s. Place order, lo. Log out, b. go to Basket - if logged)
+
+        option = displayQuestionWhichOption()
+        switch(option) {
+            s:
+                ProductDisplayer - package handler
+                productDisplayer.controller()
+            li:
+            lo:
+                Logger - package handler
+                logger.controller(userId, basket)
+            r:
+                Register - package handler
+                register.controller()
+
+            b:
+                basket.controller(basket)
+
+            default:
+                No option available!
+
+        }
+    }
+}
+
+clearScreen()
+displayMenu(userType)
+displayQuestionWhichOption()
+
+
+///////////////////////////////////////////////
+ProductDisplayer
+ProductDisplayer(Reader, Viewer, InputValidator, ProductDaoSQL - interface) {
+    List<Products>; - only initialize
+}
+
+controller {
+    displayMenu() (1. Back to main menu, 2. By category,
+                   3. By name, 4. By price)
+    displayMenu() (1. Back to main menu, 2. By category,
+                   3. By name, 4. By price, 5. Add product to basket)
+
+
+    while (backToMenu) {
+        option = displayQuestionWhichOption()
+        switch(option) {
+            1:
+                mainMenu()
+            2:
+                TreeMap<Integer, String> categories = productDaoSQL.getCategories()
+                displayCategories(categories)
+                category = displayQuestionWhichCategory()
+                List<Products> = getProductsFromDatabase(categoryId)
+                displayProducts(List<Product>)
+            3:
+                name = enterProductName()
+                List<Products> = getProductsFromDatabase(product)
+                displayProducts(List<Product>)
+            4:
+                List<Products> = getProductsFromDatabase(price)
+                displayProducts(List<Product>)
+            5:
+                if userId != 0 {
+                    addProductToBasket(id) - in basket only add id and quantity, name,
+                                             not object
+                }
+
+            default:
+                No option available!
+
+
+    }
+}
+
+displayMenu()
+displayCategories(categories)
+displayProducts(List<Product>)
+enterProductName()
+
+///////////////////////////////////////////////
+Logger
+Logger(Reader, Viewer, InputValidator, UserDaoSQL - interface)
+
+controller(userId, basket) {
+    if userId = 0  {
+        loginUser() - login, password, and check in database
+        // take from user string login and password, next in database
+        if record exists, next return true false if achieved or not
+        if true initialize basket:
+        basket = new Basket(userId)
+
+    } else {
+        logoutUser()
+    }
+
+}
+
+loginUser()
+logoutUser()
+
+///////////////////////////////////////////////
+Register
+Register(Reader, Viewer, InputValidator, UserDaoSQL - interface)
+
+controller() {
+    login = getUserLogin()
+    password = getUserPassword()
+
+    userDaoSQL.createUser(user: User) -add simple User constructor login/password
+}
+getUserLogin()
+getUserPassword()
+
+///////////////////////////////////////////////
+Basket
+Basket(Reader, Viewer, InputValidator, OrderDaoSQL - interface)
+
+controller(basket) {
+    displayBasket()
+    displayMenu() (1. mainMenu 2. Edit quantity 3. Confirm order)
+
+    while (backToMenu) {
+        option = askUserAboutOption()
+        switch(option) {
+            1:
+                mainMenu()
+            2:
+                editQuantity()
+            3:
+                confirmOrder()
+            default:
+                No option available!
+        }
+    }
+}
+
+displayBasket()
+displayMenu()
+askUserAboutOption()
+mainMenu()
+editQuantity()
+confirmOrder()
