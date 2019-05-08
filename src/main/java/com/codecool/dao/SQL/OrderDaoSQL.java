@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class OrderDaoSQL implements OrderDao {
@@ -62,8 +63,8 @@ public class OrderDaoSQL implements OrderDao {
                 Order order = new Order(oid);
 
                 PreparedStatement stmt = connection.prepareStatement(
-                        "SELECT orders.oid, products.pid, products.name, products.quantity, products.price, " +
-                                "products.status, products.categoryId, ordersDetails.productQuantity FROM orders " +
+                        "SELECT orders.oid, orders.date, products.pid, products.name, products.quantity, products.price, " +
+                                "products.status, products.categoryId, ordersDetails.productQuantity, FROM orders " +
                                 "JOIN ordersDetails ON orders.oid = ordersDetails.orderId JOIN products ON " +
                                 "ordersDetails.productId = products.pid WHERE userId = ? AND oid = ?");
                 stmt.setInt(1, userId);
@@ -78,6 +79,7 @@ public class OrderDaoSQL implements OrderDao {
                     int category = orderDetails.getInt("categoryId");
 
                     int orderQuantity = orderDetails.getInt("productQuantity");
+                    Date date = orderDetails.getDate("date");
 
                     Product product = new Product(pid, name, amount, price, status, category);
                     OrderDetail orderDetail = new OrderDetail(product, orderQuantity);
