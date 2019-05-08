@@ -34,6 +34,13 @@ public class Controller {
         boolean exitApp = false;
         while(!exitApp) {
             viewer.clearScrean();
+
+            if(userId == 0) {
+                viewer.displayMenu("e. Exit, s. Show products, li. Login, r. Register");
+            } else {
+                viewer.displayMenu("e. Exit, s. Place order, lo. Log out, b. Basket");
+            }
+
             String option = reader.getStringFromUser();
             switch(option) {
                 case "e":
@@ -50,10 +57,11 @@ public class Controller {
                     productChooser.productController();
                 case "b":
                     BasketOperator basketOperator = new BasketOperator(reader, viewer, inputValidator, orderDao, productDao);
-                    basketOperator.controller();
+                    basketOperator.controller(basket);
                 case "li":
                 case "lo":
                     Login login = new Login(reader, viewer, inputValidator, userDao);
+                    login.controller(userId, basket);
                 case "r":
                     Register register = new Register(reader, viewer, inputValidator, userDao);
             }
