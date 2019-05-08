@@ -5,5 +5,5 @@ public interface View {
     void displayQuestion(String question);
     void displayError(String error);
     void displayTable(String table);
-    void displeyMenu(String menu);
+    void displayMenu(String menu);
 }

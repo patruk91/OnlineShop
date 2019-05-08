@@ -24,7 +24,7 @@ public class TextView implements View {
     }
 
     @Override
-    public void displeyMenu(String menu) {
+    public void displayMenu(String menu) {
         System.out.println(menu);
     }
 }
