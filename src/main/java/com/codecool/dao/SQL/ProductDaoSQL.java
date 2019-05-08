@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -35,8 +36,34 @@ public class ProductDaoSQL implements ProductDao {
     }
 
     @Override
-    public List<Product> readProduct(String name, String type) {
-        return null;
+    public List<Product> readProduct(String data, String recordType) {
+        Connection connection = DatabaseConnection.getConntectionToDatabase();
+        List<Product> products = new ArrayList<>();
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT * FROM products WHERE ?=?");
+            stmt.setString(1,recordType);
+            stmt.setString(2, data);
+
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                int productId = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                int quantity = resultSet.getInt("quantity");
+                double price = resultSet.getDouble("price");
+                boolean status = resultSet.getString("status").equals("active");
+                int categoryId = resultSet.getInt("categoryId");
+
+                Product product = new Product(productId, name, quantity, price, status, categoryId);
+                products.add(product);
+            }
+            stmt.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
     }
 
     @Override
