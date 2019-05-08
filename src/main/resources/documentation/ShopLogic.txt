@@ -128,6 +128,8 @@ controller() {
     password = reder.getUserPassword()
 
     if(!checkIfUserLoginExist(login);) {
+        Credentials creds = new Credentials(login, password);
+        User user = new User(creds);
         userDaoSQL.createUser(user: User) -add simple User constructor login/password
     }
 }
@@ -161,3 +163,82 @@ displayMenu()
 displayBasket()
 editQuantity() - check if new amount is in store
 confirmOrder()
+
+///////////////////////////////////////////////
+public class User {
+    private int id;
+    private Credentials creds;
+    private Details details;
+    private List<Address> addresses;
+
+    public User(Credentials cred) {
+        this.cred = cred;
+    }
+
+    public User(Credentials credentals, int id, Details details List<Address> addresses){
+        this(credentials)
+        this.id = id;
+        this.details = details;
+        this.addresses = addresses;
+    }
+}
+
+///////////////////////////////////////////////
+public class Credentials {
+    private String login;
+    private String password;
+
+    public Credentials(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String toString() {
+        return "";
+    }
+}
+
+///////////////////////////////////////////////
+public class Details {
+    private String name;
+    private String lastName;
+
+
+    public Details(String name, String laseName) {
+        this.name = name;
+        this.lastName = laseName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+}
+
+///////////////////////////////////////////////
+Address {
+    String street;
+    String country;
+    String zipCode;
+    String city;
+
+    Address(String street, String country, String zipCode, String city) {
+        this.street = street;
+        this.country = country;
+        this.zipCode = zipCode;
+        this.city = city;
+    }
+
+
+}
