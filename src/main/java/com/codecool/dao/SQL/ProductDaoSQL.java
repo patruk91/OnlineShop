@@ -111,7 +111,13 @@ public class ProductDaoSQL implements ProductDao {
 
     @Override
     public void deleteProduct(Product product) {
-
+        Connection connection = DatabaseConnection.getConntectionToDatabase();
+        try {
+            PreparedStatement removeOrder = connection.prepareStatement("DELETE FROM orders WHERE pid = ?");
+            removeOrder.setInt(1, product.getProductId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
