@@ -28,6 +28,7 @@ public class Controller {
 
     public Controller() {
         userId = 2;
+        basket = new Basket(userId);        // Temporary solution before log in handler is coded
     }
 
     public void runner() {
