@@ -39,6 +39,9 @@ public class OrderDaoSQL implements OrderDao {
                 stmt.setInt(3, orderId);
                 stmt.executeUpdate();
             }
+
+            stmt.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,7 +84,9 @@ public class OrderDaoSQL implements OrderDao {
                     order.addOrderDetails(orderDetail);
                 }
                 userOrdersList.add(order);
+                stmt.close();
             }
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -103,6 +108,8 @@ public class OrderDaoSQL implements OrderDao {
             removeOrder = connection.prepareStatement("DELETE FROM ordersDetails WHERE orderId = ?");
             removeOrder.setInt(1, order.getOrderId());
 
+            removeOrder.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
