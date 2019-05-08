@@ -113,7 +113,7 @@ public class ProductDaoSQL implements ProductDao {
     public void deleteProduct(Product product) {
         Connection connection = DatabaseConnection.getConntectionToDatabase();
         try {
-            PreparedStatement removeOrder = connection.prepareStatement("DELETE FROM orders WHERE pid = ?");
+            PreparedStatement removeOrder = connection.prepareStatement("DELETE FROM products WHERE pid = ?");
             removeOrder.setInt(1, product.getProductId());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,7 +121,20 @@ public class ProductDaoSQL implements ProductDao {
     }
 
     @Override
-    public TreeMap<Integer, String> getCategories() {
-        return null;
+    public TreeMap<String, Integer> getCategories() {
+        Connection connection = DatabaseConnection.getConntectionToDatabase();
+        TreeMap<String, Integer> categories = new TreeMap<>();
+        try {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories");
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                int categoryId = resultSet.getInt("cid");
+                String name = resultSet.getString("categoryName");
+                categories.put(name, categoryId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categories;
     }
 }

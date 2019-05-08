@@ -10,5 +10,5 @@ public interface ProductDao {
     List<Product> readProduct(String name, String type);
     void updateProduct(Product product, String column);
     void deleteProduct(Product product);
-    TreeMap<Integer, String> getCategories();
+    TreeMap<String, Integer> getCategories();
 }
