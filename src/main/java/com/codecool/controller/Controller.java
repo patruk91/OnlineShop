@@ -49,6 +49,7 @@ public class Controller {
                     exitApp = true;
                     break;
                 case "s":
+                    viewer.clearScreen();
                     ProductChooser productChooser = null;
 
                     if(userId == 0) {
