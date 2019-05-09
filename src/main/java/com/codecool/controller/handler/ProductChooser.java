@@ -146,7 +146,7 @@ public class ProductChooser {
 
     private boolean productOnList(String name) {
         for (Product product : products) {
-            if (name.equals(product.getName())) {
+            if (name.toLowerCase().equals(product.getName().toLowerCase())) {
                 return true;
             }
         }
