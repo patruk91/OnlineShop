@@ -6,12 +6,8 @@ import com.codecool.model.Order;
 import com.codecool.model.OrderDetail;
 import com.codecool.model.Product;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class OrderDaoSQL implements OrderDao {
@@ -21,9 +17,10 @@ public class OrderDaoSQL implements OrderDao {
         Connection connection = DatabaseConnection.getConntectionToDatabase();
         try {
             PreparedStatement stmt = connection.prepareStatement(
-                    "INSERT INTO orders (userId, statusName) values (?, ?)");
+                    "INSERT INTO orders (userId, statusName, date) values (?, ?, ?)");
             stmt.setInt(1, basket.getUserId());
             stmt.setString(2, "submit");
+            stmt.setDate(3, new java.sql.Date(System.currentTimeMillis()));
             stmt.executeUpdate();
 
             ResultSet rs = stmt.executeQuery("SELECT id FROM users ORDER BY ID DESC limit 1");
