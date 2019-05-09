@@ -30,10 +30,16 @@ public class Basket {
 
     @Override
     public String toString() {
+        double total = 0.0;
         StringBuilder sb = new StringBuilder();
-        for (OrderDetail orderDetail : orderDetails) {
-            sb.append(String.format("%s %d \n", orderDetail.getProduct().toString(), orderDetail.getQuantity()));
+        for (int i = 0; i < orderDetails.size(); i++) {
+            OrderDetail orderDetail = orderDetails.get(i);
+            sb.append(String.format("%d. Name: %s Quantity: %d Price: %f\n", i + 1, orderDetail.getProduct().getName(),
+                    orderDetail.getQuantity(), orderDetail.getProduct().getPrice() * orderDetail.getQuantity()));
+            total += orderDetail.getProduct().getPrice() * orderDetail.getQuantity();
         }
-        return "UserId: " + userId + sb.toString();
+        sb.append("\n");
+        sb.append(total);
+        return sb.toString();
     }
 }
