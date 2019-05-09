@@ -6,9 +6,9 @@ import com.codecool.reader.Reader;
 import com.codecool.viewer.View;
 
 public class BasketOperator {
-    Reader reader;
-    View viewer;
-    OrderDao orderDao;
+    private Reader reader;
+    private View viewer;
+    private OrderDao orderDao;
 
     public BasketOperator(Reader reader, View viewer, OrderDao orderDao) {
         this.reader = reader;
@@ -57,14 +57,17 @@ public class BasketOperator {
 
     private void editQuantity(Basket basket) {
         if(basket.getOrderDetails().size() > 0 ) {
+            viewer.displayQuestion("Enter product number");
             int detailIndex = reader.getNumberInRange(1, basket.getOrderDetails().size()) - 1;
+            viewer.displayQuestion("Enter new product quantity");
             int newQuantity = reader.getNumberInRange(1, basket.getOrderDetails().get(detailIndex).getProduct().getAmount());
             basket.getOrderDetails().get(detailIndex).setQuantity(newQuantity);
         }
     }
 
-    public void removeProduct(Basket basket) {
+    private void removeProduct(Basket basket) {
         if(basket.getOrderDetails().size() > 0 ) {
+            viewer.displayQuestion("Enter product number");
             int detailIndex = reader.getNumberInRange(1, basket.getOrderDetails().size()) - 1;
             basket.getOrderDetails().remove(detailIndex);
         }
