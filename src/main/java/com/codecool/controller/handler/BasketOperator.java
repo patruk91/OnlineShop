@@ -17,10 +17,10 @@ public class BasketOperator {
     }
 
     public void controller(Basket basket) {
-        final int BACKTOMAINMENU = 1;
-        final int EDITQUANTITY = 2;
-        final int REMOVEPRODUCT = 3;
-        final int CONFIRMORDER = 4;
+        final int BACK_TO_MAIN_MENU = 1;
+        final int EDIT_QUANTITY = 2;
+        final int REMOVE_PRODUCT = 3;
+        final int CONFIRM_ORDER = 4;
 
         boolean backToMainMenu = false;
         while(!backToMainMenu) {
@@ -31,16 +31,16 @@ public class BasketOperator {
             int option = reader.getNumberInRange(1, 3);
 
             switch (option) {
-                case BACKTOMAINMENU:
+                case BACK_TO_MAIN_MENU:
                     backToMainMenu = true;
                     break;
-                case EDITQUANTITY:
+                case EDIT_QUANTITY:
                     editQuantity(basket);
                     break;
-                case REMOVEPRODUCT:
+                case REMOVE_PRODUCT:
                     removeProduct(basket);
                     break;
-                case CONFIRMORDER:
+                case CONFIRM_ORDER:
                     confirmOrder(basket);
                     break;
             }
