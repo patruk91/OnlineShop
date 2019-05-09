@@ -42,11 +42,13 @@ public class ProductDaoSQL implements ProductDao {
 
         try {
             PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT * FROM products JOIN categories ON categoryID = cid WHERE ?=?");
-            stmt.setString(1,column);
-            stmt.setString(2, data);
+                    "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" = ?");
+//            stmt.setString(1,column);
+            stmt.setString(1, data);
+
 
             ResultSet resultSet = stmt.executeQuery();
+
             while (resultSet.next()) {
                 int productId = resultSet.getInt("pid");
                 String name = resultSet.getString("name");
@@ -72,10 +74,9 @@ public class ProductDaoSQL implements ProductDao {
 
         try {
             PreparedStatement stmt = connection.prepareStatement(
-                    "UPDATE products set ?=? where ID=?");
-            stmt.setString(1, column);
+                    "UPDATE products set " +  column + " = ? WHERE id = ?");
             updateDataForProduct(product, column, stmt);
-            stmt.setInt(3, product.getProductId());
+            stmt.setInt(2, product.getProductId());
             stmt.executeUpdate();
 
             stmt.close();
@@ -89,19 +90,19 @@ public class ProductDaoSQL implements ProductDao {
         try {
             switch (column) {
                 case "name":
-                    stmt.setString(2, product.getName());
+                    stmt.setString(1, product.getName());
                     break;
                 case "quantity":
-                    stmt.setInt(2, product.getAmount());
+                    stmt.setInt(1, product.getAmount());
                     break;
                 case "price":
-                    stmt.setDouble(2, product.getPrice());
+                    stmt.setDouble(1, product.getPrice());
                     break;
                 case "status":
-                    stmt.setBoolean(2, product.isStatus());
+                    stmt.setBoolean(1, product.isStatus());
                     break;
                 case "categoryId":
-                    stmt.setInt(2, product.getProductId());
+                    stmt.setInt(1, product.getProductId());
                     break;
             }
         } catch (SQLException e) {
