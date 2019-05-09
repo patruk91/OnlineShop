@@ -80,7 +80,7 @@ public class ProductChooser {
                     if (userType.equals("customer") && products.size() > 0) {
                         String productNameBasket = reader.getStringFromUser("Enter product name");
                         if (productOnList(productNameBasket)) {
-                            reader.getStringFromUser("Enter product amount");
+                            view.displayMessage("Enter product amount");
                             int quantity = reader.getNumberInRange(1, getProductByName(productNameBasket).getAmount());
                             basket.addOrderDetails(new OrderDetail(getProductByName(productNameBasket), quantity));
                         }
