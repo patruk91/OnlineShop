@@ -48,7 +48,6 @@ public class ProductChooser {
                     displayProductsByName();
                     break;
                 case 4:
-
                     addProductToBasket(userType);
                     break;
             }
@@ -94,7 +93,12 @@ public class ProductChooser {
             if (productOnList(productNameBasket)) {
                 view.displayMessage("Enter product amount: ");
                 int quantity = reader.getNumberInRange(1, getProductByName(productNameBasket).getAmount());
-                basket.addOrderDetails(new OrderDetail(getProductByName(productNameBasket), quantity));
+                if (basket.getOrderDetails().size() > 0 && checkIfProductIsInBasket(productNameBasket)) {
+                    updateProductInBasket(productNameBasket, quantity);
+                } else {
+                    basket.addOrderDetails(new OrderDetail(getProductByName(productNameBasket), quantity));
+                }
+
                 view.clearScreen();
             }
         } else {
@@ -102,6 +106,22 @@ public class ProductChooser {
         }
     }
 
+    private boolean checkIfProductIsInBasket(String productNameBasket) {
+        for (int i = 0; i < basket.getOrderDetails().size(); i++) {
+            if (basket.getOrderDetails().get(i).getProduct().equals(getProductByName(productNameBasket))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void updateProductInBasket(String productNameBasket, int quantity) {
+        for (int i = 0; i < basket.getOrderDetails().size(); i++) {
+            if (basket.getOrderDetails().get(i).getProduct().equals(getProductByName(productNameBasket))) {
+                basket.getOrderDetails().get(i).updateQuantity(quantity);
+            }
+        }
+    }
 
     private void displayCategories(TreeMap<String, Integer> categories){
         StringBuilder sb = new StringBuilder();
