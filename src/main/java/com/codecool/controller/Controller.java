@@ -57,16 +57,20 @@ public class Controller {
                         productChooser = new ProductChooser(reader, viewer, productDao, basket);
                     }
                     productChooser.productController("customer");
+                    break;
                 case "b":
                     BasketOperator basketOperator = new BasketOperator(reader, viewer, orderDao);
                     basketOperator.controller(basket);
+                    break;
                 case "li":
                 case "lo":
 //                    Login login = new Login(reader, viewer, inputValidator, userDao);
 //                    login.controller(userId, basket);
+//                    break;
                 case "r":
 //                    Register register = new Register(reader, viewer, inputValidator, userDao);
 //                    register.controller();
+//                    break;
                 default:
                     viewer.displayError("Please, provide correct data");
             }
