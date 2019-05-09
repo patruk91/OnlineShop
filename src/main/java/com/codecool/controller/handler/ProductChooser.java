@@ -100,9 +100,11 @@ public class ProductChooser {
                 }
 
                 view.clearScreen();
+            } else {
+                view.displayMessage("No product available by that name!");
             }
         } else {
-            view.displayMessage("No product available by that name!");
+            view.displayMessage("No product on list!");
         }
     }
 
@@ -153,7 +155,7 @@ public class ProductChooser {
 
     private Product getProductByName(String name) {
         for (Product product : products) {
-            if (product.getName().equals(name)) {
+            if (product.getName().toLowerCase().equals(name.toLowerCase())) {
                 return product;
             }
         }
