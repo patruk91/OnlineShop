@@ -39,6 +39,12 @@ public class OrderDaoSQL implements OrderDao {
                 stmt.setInt(2, detail.getQuantity());
                 stmt.setInt(3, orderId);
                 stmt.executeUpdate();
+
+                stmt = connection.prepareStatement(
+                        "UPDATE products SET quantity = ? WHERE pid = ?");
+                stmt.setInt(1, detail.getProduct().getProductId());
+                stmt.setInt(2, detail.getProduct().getAmount() - detail.getQuantity());
+                stmt.executeUpdate();
             }
 
             stmt.close();
