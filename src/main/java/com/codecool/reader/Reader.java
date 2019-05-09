@@ -40,6 +40,8 @@ public class Reader {
                 int numInput = Integer.parseInt(input);
                 if(inputValidator.isInRange(numInput, start, end)) {
                     return numInput;
+                } else {
+                    view.displayError("Please, provide correct data");
                 }
             } else {
                 view.displayError("Please, provide correct data");
@@ -54,6 +56,8 @@ public class Reader {
                 double numInput = Double.parseDouble(input);
                 if(inputValidator.isInRange(numInput, start, end)) {
                     return numInput;
+                } else {
+                    view.displayError("Please, provide correct data");
                 }
             } else {
                 view.displayError("Please, provide correct data");

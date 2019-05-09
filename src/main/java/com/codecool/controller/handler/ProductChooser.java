@@ -2,11 +2,13 @@ package com.codecool.controller.handler;
 
 import com.codecool.dao.ProductDao;
 import com.codecool.model.Basket;
+import com.codecool.model.OrderDetail;
 import com.codecool.model.Product;
 import com.codecool.reader.Reader;
 import com.codecool.validator.InputValidator;
 import com.codecool.viewer.View;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -16,7 +18,7 @@ public class ProductChooser {
     private InputValidator inputValidator;
     private ProductDao productDao;
     private Basket basket;
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     public ProductChooser(Reader reader, View view, InputValidator inputValidator, ProductDao productDao) {
         this.reader = reader;
@@ -33,14 +35,12 @@ public class ProductChooser {
     public void productController(String userType) {
         String unloggedMenu = "1. Back to main menu"
                                 + "\n2. By category"
-                                + "\n3. By name"
-                                + "\n4. By price";
+                                + "\n3. By name";
 
         String userMenu = "1. Back to main menu"
                                 + "\n2. By category"
                                 + "\n3. By name"
-                                + "\n4. By price"
-                                + "\n5. Add product to basket";
+                                + "\n4. Add product to basket";
 
         switch (userType) {
             case "anonymous":
@@ -55,7 +55,7 @@ public class ProductChooser {
         }
         boolean backToMenu = false;
         final int START = 1;
-        int end = userType.equals("anonymous") ?  4 :  5;
+        int end = userType.equals("anonymous") ?  3 :  4;
         while (!backToMenu) {
             view.displayQuestion("Choose option");
             int option = reader.getNumberInRange(START, end);
@@ -75,6 +75,18 @@ public class ProductChooser {
                     String productName = reader.getStringFromUser("Enter product name");
                     products = productDao.readProduct("name", productName);
                     displayProducts();
+                    break;
+                case 4:
+                    if (userType.equals("customer") && products.size() > 0) {
+                        String productNameBasket = reader.getStringFromUser("Enter product name");
+                        if (productOnList(productNameBasket)) {
+                            reader.getStringFromUser("Enter product amount");
+                            int quantity = reader.getNumberInRange(1, getProductByName(productNameBasket).getAmount());
+                            basket.addOrderDetails(new OrderDetail(getProductByName(productNameBasket), quantity));
+                        }
+                    } else {
+                        view.displayMessage("No product available by that name!");
+                    }
                     break;
             }
         }
@@ -97,5 +109,23 @@ public class ProductChooser {
             sb.append("\n");
         }
         view.displayTable(sb.toString());
+    }
+
+    private boolean productOnList(String name) {
+        for (Product product : products) {
+            if (name.equals(product.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Product getProductByName(String name) {
+        for (Product product : products) {
+            if (product.getName().equals(name)) {
+                return product;
+            }
+        }
+        return new Product(0,"",0,0,false,0);
     }
 }
