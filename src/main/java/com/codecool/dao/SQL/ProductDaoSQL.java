@@ -43,7 +43,6 @@ public class ProductDaoSQL implements ProductDao {
         try {
             PreparedStatement stmt = connection.prepareStatement(
                     "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" = ?");
-//            stmt.setString(1,column);
             stmt.setString(1, data);
 
 
