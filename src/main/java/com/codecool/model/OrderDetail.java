@@ -20,4 +20,8 @@ public class OrderDetail {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public void updateQuantity(int newQuantity) {
+        quantity += newQuantity;
+    }
 }
