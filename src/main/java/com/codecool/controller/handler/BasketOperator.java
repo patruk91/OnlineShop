@@ -16,7 +16,7 @@ public class BasketOperator {
         this.orderDao = orderDao;
     }
 
-    public void Controller(Basket basket) {
+    public void controller(Basket basket) {
         final int BACKTOMAINMENU = 1;
         final int EDITQUANTITY = 2;
         final int REMOVEPRODUCT = 3;
