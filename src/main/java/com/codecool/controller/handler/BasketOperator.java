@@ -28,7 +28,7 @@ public class BasketOperator {
             displayMenu();
             displayBasket(basket);
             viewer.displayQuestion("Enter menu option");
-            int option = reader.getNumberInRange(1, 3);
+            int option = reader.getNumberInRange(1, 4);
 
             switch (option) {
                 case BACK_TO_MAIN_MENU:
