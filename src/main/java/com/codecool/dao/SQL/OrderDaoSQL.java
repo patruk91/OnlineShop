@@ -23,7 +23,8 @@ public class OrderDaoSQL implements OrderDao {
             stmt.setDate(3, new java.sql.Date(System.currentTimeMillis()));
             stmt.executeUpdate();
 
-            ResultSet rs = stmt.executeQuery("SELECT oid FROM orders ORDER BY oid DESC limit 1");
+            stmt = connection.prepareStatement("SELECT oid FROM orders ORDER BY oid DESC limit 1");
+            ResultSet rs = stmt.executeQuery();
             int orderId = 1;
             while(rs.next()) {
                 orderId = rs.getInt("id");
