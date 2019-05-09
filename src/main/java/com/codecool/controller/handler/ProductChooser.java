@@ -93,7 +93,7 @@ public class ProductChooser {
             if (productOnList(productNameBasket)) {
                 view.displayMessage("Enter product amount: ");
                 int quantity = reader.getNumberInRange(1, getProductByName(productNameBasket).getAmount());
-                if (basket.getOrderDetails().size() > 0) {
+                if (basket.getOrderDetails().size() > 0 && checkIfProductIsInBasket(productNameBasket)) {
                     updateProductInBasket(productNameBasket, quantity);
                 } else {
                     basket.addOrderDetails(new OrderDetail(getProductByName(productNameBasket), quantity));
@@ -106,12 +106,19 @@ public class ProductChooser {
         }
     }
 
+    private boolean checkIfProductIsInBasket(String productNameBasket) {
+        for (int i = 0; i < basket.getOrderDetails().size(); i++) {
+            if (basket.getOrderDetails().get(i).getProduct().equals(getProductByName(productNameBasket))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void updateProductInBasket(String productNameBasket, int quantity) {
-        for (OrderDetail orderDetail : basket.getOrderDetails()) {
-            if (orderDetail.getProduct().equals(getProductByName(productNameBasket))) {
-                orderDetail.updateQuantity(quantity);
-            } else {
-                basket.addOrderDetails(new OrderDetail(getProductByName(productNameBasket), quantity));
+        for (int i = 0; i < basket.getOrderDetails().size(); i++) {
+            if (basket.getOrderDetails().get(i).getProduct().equals(getProductByName(productNameBasket))) {
+                basket.getOrderDetails().get(i).updateQuantity(quantity);
             }
         }
     }
