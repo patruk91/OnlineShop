@@ -17,6 +17,7 @@ import com.codecool.viewer.View;
 import com.codecool.viewer.textViewer.TextView;
 
 public class Controller {
+
     private UserDao userDao = new UserDaoSQL();
     private ProductDao productDao = new ProductDaoSQL();
     private OrderDao orderDao = new OrderDaoSQL();
@@ -55,17 +56,17 @@ public class Controller {
                     } else {
                         productChooser = new ProductChooser(reader, viewer, inputValidator, productDao, basket);
                     }
-                    productChooser.productController();
+                    productChooser.productController("customer");
                 case "b":
-                    BasketOperator basketOperator = new BasketOperator(reader, viewer, inputValidator, orderDao, productDao);
-                    basketOperator.controller(basket);
+//                    BasketOperator basketOperator = new BasketOperator(reader, viewer, inputValidator, orderDao, productDao);
+//                    basketOperator.controller(basket);
                 case "li":
                 case "lo":
-                    Login login = new Login(reader, viewer, inputValidator, userDao);
-                    login.controller(userId, basket);
+//                    Login login = new Login(reader, viewer, inputValidator, userDao);
+//                    login.controller(userId, basket);
                 case "r":
-                    Register register = new Register(reader, viewer, inputValidator, userDao);
-                    register.controller();
+//                    Register register = new Register(reader, viewer, inputValidator, userDao);
+//                    register.controller();
                 default:
                     viewer.displayError("Please, provide correct data");
             }
