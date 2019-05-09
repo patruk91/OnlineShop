@@ -36,14 +36,14 @@ public class ProductDaoSQL implements ProductDao {
     }
 
     @Override
-    public List<Product> readProduct(String data, String recordType) {
+    public List<Product> readProduct(String column, String data) {
         Connection connection = DatabaseConnection.getConntectionToDatabase();
         List<Product> products = new ArrayList<>();
 
         try {
             PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT * FROM products WHERE ?=?");
-            stmt.setString(1,recordType);
+                    "SELECT * FROM products JOIN categories ON categoryID = cid WHERE ?=?");
+            stmt.setString(1,column);
             stmt.setString(2, data);
 
             ResultSet resultSet = stmt.executeQuery();
