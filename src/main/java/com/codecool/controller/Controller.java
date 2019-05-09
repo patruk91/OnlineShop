@@ -52,9 +52,9 @@ public class Controller {
                     ProductChooser productChooser = null;
 
                     if(userId == 0) {
-                        productChooser = new ProductChooser(reader, viewer, inputValidator, productDao);
+                        productChooser = new ProductChooser(reader, viewer, productDao);
                     } else {
-                        productChooser = new ProductChooser(reader, viewer, inputValidator, productDao, basket);
+                        productChooser = new ProductChooser(reader, viewer, productDao, basket);
                     }
                     productChooser.productController("customer");
                 case "b":

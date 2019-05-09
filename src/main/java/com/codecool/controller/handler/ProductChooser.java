@@ -5,7 +5,6 @@ import com.codecool.model.Basket;
 import com.codecool.model.OrderDetail;
 import com.codecool.model.Product;
 import com.codecool.reader.Reader;
-import com.codecool.validator.InputValidator;
 import com.codecool.viewer.View;
 
 import java.util.ArrayList;
@@ -15,32 +14,50 @@ import java.util.TreeMap;
 public class ProductChooser {
     private Reader reader;
     private View view;
-    private InputValidator inputValidator;
     private ProductDao productDao;
     private Basket basket;
     private List<Product> products = new ArrayList<>();
 
-    public ProductChooser(Reader reader, View view, InputValidator inputValidator, ProductDao productDao) {
+    public ProductChooser(Reader reader, View view, ProductDao productDao) {
         this.reader = reader;
         this.view = view;
-        this.inputValidator = inputValidator;
         this.productDao = productDao;
     }
 
-    public ProductChooser(Reader reader, View view, InputValidator inputValidator, ProductDao productDao, Basket basket) {
-        this(reader, view, inputValidator, productDao);
+    public ProductChooser(Reader reader, View view, ProductDao productDao, Basket basket) {
+        this(reader, view, productDao);
         this.basket = basket;
     }
 
     public void productController(String userType) {
-        String unloggedMenu = "1. Back to main menu"
-                                + "\n2. By category"
-                                + "\n3. By name";
+        boolean backToMenu = false;
+        final int START = 1;
+        int end = userType.equals("anonymous") ?  3 :  4;
+        while (!backToMenu) {
+            displayMenu(userType);
+            view.displayQuestion("Choose menu option");
+            int option = reader.getNumberInRange(START, end);
+            switch (option) {
+                case 1:
+                    backToMenu = true;
+                    break;
+                case 2:
+                    displayProductsByCategory();
+                    break;
+                case 3:
+                    displayProductsByName();
+                    break;
+                case 4:
 
-        String userMenu = "1. Back to main menu"
-                                + "\n2. By category"
-                                + "\n3. By name"
-                                + "\n4. Add product to basket";
+                    addProductToBasket(userType);
+                    break;
+            }
+        }
+    }
+
+    private void displayMenu(String userType) {
+        String unloggedMenu = "1. Back to main menu 2. By category 3. By name";
+        String userMenu = "1. Back to main menu 2. By category 3. By name 4. Add product to basket";
 
         switch (userType) {
             case "anonymous":
@@ -53,45 +70,38 @@ public class ProductChooser {
                 view.displayError("No option available");
                 break;
         }
-        boolean backToMenu = false;
-        final int START = 1;
-        int end = userType.equals("anonymous") ?  3 :  4;
-        while (!backToMenu) {
-            view.displayQuestion("Choose option");
-            int option = reader.getNumberInRange(START, end);
-            switch (option) {
-                case 1:
-                    backToMenu = true;
-                    break;
-                case 2:
-                    view.clearScreen();
-                    TreeMap<String, Integer> categories = productDao.getCategories();
-                    displayCategories(categories);
-                    String category = reader.getCategoryFromUser(categories.keySet());
-                    products = productDao.readProduct("categoryName", category);
-                    displayProducts();
-                    break;
-                case 3:
-                    String productName = reader.getStringFromUser("Enter product name");
-                    products = productDao.readProduct("name", productName);
-                    displayProducts();
-                    break;
-                case 4:
-                    if (userType.equals("customer") && products.size() > 0) {
-                        String productNameBasket = reader.getStringFromUser("Enter product name");
-                        if (productOnList(productNameBasket)) {
-                            view.displayMessage("Enter product amount");
-                            int quantity = reader.getNumberInRange(1, getProductByName(productNameBasket).getAmount());
-                            basket.addOrderDetails(new OrderDetail(getProductByName(productNameBasket), quantity));
-                        }
-                    } else {
-                        view.displayMessage("No product available by that name!");
-                    }
-                    break;
-            }
-        }
-
     }
+
+    private void displayProductsByCategory() {
+        view.clearScreen();
+        TreeMap<String, Integer> categories = productDao.getCategories();
+        displayCategories(categories);
+        String category = reader.getCategoryFromUser(categories.keySet());
+        products = productDao.readProduct("categoryName", category);
+        displayProducts();
+    }
+
+    private void displayProductsByName() {
+        view.clearScreen();
+        String productName = reader.getStringFromUser("Enter product name");
+        products = productDao.readProduct("name", productName);
+        displayProducts();
+    }
+
+    private void addProductToBasket(String userType) {
+        if (userType.equals("customer") && products.size() > 0) {
+            String productNameBasket = reader.getStringFromUser("Enter product name");
+            if (productOnList(productNameBasket)) {
+                view.displayMessage("Enter product amount: ");
+                int quantity = reader.getNumberInRange(1, getProductByName(productNameBasket).getAmount());
+                basket.addOrderDetails(new OrderDetail(getProductByName(productNameBasket), quantity));
+                view.clearScreen();
+            }
+        } else {
+            view.displayMessage("No product available by that name!");
+        }
+    }
+
 
     private void displayCategories(TreeMap<String, Integer> categories){
         StringBuilder sb = new StringBuilder();
@@ -108,6 +118,7 @@ public class ProductChooser {
             sb.append(product.toString());
             sb.append("\n");
         }
+        view.clearScreen();
         view.displayTable(sb.toString());
     }
 
