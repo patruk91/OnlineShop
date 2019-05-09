@@ -28,6 +28,6 @@ public class Order extends Basket {
 
     @Override
     public String toString() {
-        return "date: " + date + "\n" + super.toString();
+        return "date: " + date + ", " + super.toString();
     }
 }
