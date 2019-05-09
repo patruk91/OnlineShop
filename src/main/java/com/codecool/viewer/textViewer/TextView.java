@@ -10,7 +10,7 @@ public class TextView implements View {
 
     @Override
     public void displayQuestion(String question) {
-        System.out.print(question + "?: ");
+        System.out.println(question + "?: ");
     }
 
     @Override
