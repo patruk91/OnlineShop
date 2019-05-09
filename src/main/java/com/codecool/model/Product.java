@@ -1,5 +1,7 @@
 package com.codecool.model;
 
+import java.util.Objects;
+
 public class Product {
     private int productId;
     private String name;
@@ -60,7 +62,27 @@ public class Product {
     public int getCategoryId() {
         return categoryId;
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Product product = (Product) o;
+        return productId == product.productId && name.equals(product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result * productId + name.hashCode();
+        return result;
+    }
+
     @Override
     public String toString() {
         return "name: " + name
