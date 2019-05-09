@@ -10,7 +10,7 @@ public class DatabaseConnection {
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:onlineShop.db");
-            connection.setAutoCommit(false);
+            connection.setAutoCommit(true);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

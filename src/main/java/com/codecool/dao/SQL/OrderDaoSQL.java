@@ -27,7 +27,7 @@ public class OrderDaoSQL implements OrderDao {
             ResultSet rs = stmt.executeQuery();
             int orderId = 1;
             while(rs.next()) {
-                orderId = rs.getInt("id");
+                orderId = rs.getInt("oid");
             }
 
             for(OrderDetail detail: basket.getOrderDetails()) {
@@ -40,8 +40,8 @@ public class OrderDaoSQL implements OrderDao {
 
                 stmt = connection.prepareStatement(
                         "UPDATE products SET quantity = ? WHERE pid = ?");
-                stmt.setInt(1, detail.getProduct().getProductId());
-                stmt.setInt(2, detail.getProduct().getAmount() - detail.getQuantity());
+                stmt.setInt(1, detail.getProduct().getAmount() - detail.getQuantity());
+                stmt.setInt(2, detail.getProduct().getProductId());
                 stmt.executeUpdate();
             }
 
