@@ -4,6 +4,7 @@ import com.codecool.validator.InputValidator;
 import com.codecool.viewer.View;
 
 import java.util.Scanner;
+import java.util.Set;
 
 public class Reader {
     private Scanner scanner;
@@ -62,8 +63,15 @@ public class Reader {
         }
     }
 
-
-
-
-
+    public String getCategoryFromUser(Set<String> categories) {
+        String userInput = "";
+        while (userInput.isBlank()){
+            this.view.displayQuestion("Choose category");
+            userInput = this.getInput();
+            if (userInput.isBlank() && !categories.contains(userInput)){
+                view.displayError("Please, provide correct data");
+            }
+        }
+        return userInput;
+    }
 }
