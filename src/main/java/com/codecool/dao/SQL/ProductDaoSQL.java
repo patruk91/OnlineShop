@@ -42,7 +42,7 @@ public class ProductDaoSQL implements ProductDao {
 
         try {
             PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT * FROM products WHERE ?=?");
+                    "SELECT * FROM products JOIN categories ON categoryID = cid WHERE ?=?");
             stmt.setString(1,recordType);
             stmt.setString(2, data);
 
