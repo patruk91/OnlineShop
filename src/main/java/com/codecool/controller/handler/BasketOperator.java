@@ -56,18 +56,24 @@ public class BasketOperator {
     }
 
     private void editQuantity(Basket basket) {
-        int detailIndex = reader.getNumberInRange(1, basket.getOrderDetails().size()) - 1;
-        int newQuantity = reader.getNumberInRange(1, basket.getOrderDetails().get(detailIndex).getProduct().getAmount());
-        basket.getOrderDetails().get(detailIndex).setQuantity(newQuantity);
+        if(basket.getOrderDetails().size() > 0 ) {
+            int detailIndex = reader.getNumberInRange(1, basket.getOrderDetails().size()) - 1;
+            int newQuantity = reader.getNumberInRange(1, basket.getOrderDetails().get(detailIndex).getProduct().getAmount());
+            basket.getOrderDetails().get(detailIndex).setQuantity(newQuantity);
+        }
     }
 
     public void removeProduct(Basket basket) {
-        int detailIndex = reader.getNumberInRange(1, basket.getOrderDetails().size()) - 1;
-        basket.getOrderDetails().remove(detailIndex);
+        if(basket.getOrderDetails().size() > 0 ) {
+            int detailIndex = reader.getNumberInRange(1, basket.getOrderDetails().size()) - 1;
+            basket.getOrderDetails().remove(detailIndex);
+        }
     }
 
     private void confirmOrder(Basket basket) {
-        orderDao.createOrder(basket);
-        basket.getOrderDetails().clear();
+        if(basket.getOrderDetails().size() > 0 ) {
+            orderDao.createOrder(basket);
+            basket.getOrderDetails().clear();
+        }
     }
 }
