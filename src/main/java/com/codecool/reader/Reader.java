@@ -33,13 +33,12 @@ public class Reader {
     }
 
     public int getNumberInRange(int start, int end) {
-        int result = 0;
         while (true) {
             String input = getInput();
             if(inputValidator.isInputEmpty(input) && inputValidator.isNumber(input)) {
                 int numInput = Integer.parseInt(input);
                 if(inputValidator.isInRange(numInput, start, end)) {
-                    return result;
+                    return numInput;
                 }
             } else {
                 view.displayError("Please, provide correct data");
@@ -48,13 +47,12 @@ public class Reader {
     }
 
     public double getNumberInRange(double start, double end) {
-        int result = 0;
         while (true) {
             String input = getInput();
             if(inputValidator.isInputEmpty(input) && inputValidator.isNumber(input)) {
                 double numInput = Double.parseDouble(input);
                 if(inputValidator.isInRange(numInput, start, end)) {
-                    return result;
+                    return numInput;
                 }
             } else {
                 view.displayError("Please, provide correct data");
