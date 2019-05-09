@@ -18,7 +18,7 @@ public class Reader {
     }
 
     private String getInput() {
-        return scanner.nextLine();
+        return scanner.nextLine().trim();
     }
 
     public String getStringFromUser(String question) {
@@ -70,7 +70,7 @@ public class Reader {
         while (userInput.isBlank()){
             this.view.displayQuestion("Choose category");
             userInput = this.getInput();
-            if (userInput.isBlank() && !categories.contains(userInput)){
+            if (userInput.isBlank() && !categories.contains(userInput.toUpperCase())){
                 view.displayError("Please, provide correct data");
             }
         }
