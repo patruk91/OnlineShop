@@ -58,8 +58,8 @@ public class Controller {
                     }
                     productChooser.productController("customer");
                 case "b":
-//                    BasketOperator basketOperator = new BasketOperator(reader, viewer, inputValidator, orderDao, productDao);
-//                    basketOperator.controller(basket);
+                    BasketOperator basketOperator = new BasketOperator(reader, viewer, orderDao);
+                    basketOperator.controller(basket);
                 case "li":
                 case "lo":
 //                    Login login = new Login(reader, viewer, inputValidator, userDao);
