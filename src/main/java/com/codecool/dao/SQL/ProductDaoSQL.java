@@ -42,8 +42,8 @@ public class ProductDaoSQL implements ProductDao {
 
         try {
             PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" = ?");
-            stmt.setString(1, data);
+                    "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" LIKE ?");
+            stmt.setString(1, "%" + data + "%");
 
 
             ResultSet resultSet = stmt.executeQuery();

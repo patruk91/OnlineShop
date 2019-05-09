@@ -71,7 +71,11 @@ public class ProductChooser {
                     products = productDao.readProduct("categoryName", category);
                     displayProducts();
                     break;
-
+                case 3:
+                    String productName = reader.getStringFromUser("Enter product name");
+                    products = productDao.readProduct("name", productName);
+                    displayProducts();
+                    break;
             }
         }
 
