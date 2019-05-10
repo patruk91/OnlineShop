@@ -4,24 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Basket {
-    private int userId;
+//    private int userId;
+    private User user;
     private List<OrderDetail> orderDetails;
 
-    public Basket(int userId) {
-        this.userId = userId;
+    public Basket(User user) {
+        this.user = user;
         this.orderDetails = new ArrayList<>();
     }
 
     public int getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public List<OrderDetail> getOrderDetails() {
         return orderDetails;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public void addOrderDetails(OrderDetail orderDetail) {
