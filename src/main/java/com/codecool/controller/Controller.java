@@ -30,7 +30,7 @@ public class Controller {
 
     public Controller() {
         user = new User(2, "customer");
-        basket = new Basket(user);        // Temporary solution before log in handler is coded
+        basket = new Basket(user.getId());        // Temporary solution before log in handler is coded
     }
 
     public void runner() {

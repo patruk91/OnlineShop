@@ -61,7 +61,7 @@ public class OrderDaoSQL implements OrderDao {
             ResultSet userOrders = getUserOrders.executeQuery();
             while(userOrders.next()) {
                 int oid = userOrders.getInt("id");
-                Order order = new Order(new User(userId, "customer"), oid);
+                Order order = new Order(userId, oid);
 
                 PreparedStatement stmt = connection.prepareStatement(
                         "SELECT orders.oid, orders.date, products.pid, products.name, products.quantity, products.price, " +
