@@ -25,7 +25,6 @@ public class Controller {
     private View viewer = new TextView();
     private InputValidator inputValidator = new InputValidator();
     private Reader reader = new Reader(viewer, inputValidator);
-//    private int userDaoId;
     private User user;
     private Basket basket;
 
