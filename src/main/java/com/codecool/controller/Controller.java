@@ -11,6 +11,7 @@ import com.codecool.dao.SQL.OrderDaoSQL;
 import com.codecool.dao.SQL.ProductDaoSQL;
 import com.codecool.dao.SQL.UserDaoSQL;
 import com.codecool.model.Basket;
+import com.codecool.model.User;
 import com.codecool.reader.Reader;
 import com.codecool.validator.InputValidator;
 import com.codecool.viewer.View;
@@ -24,12 +25,12 @@ public class Controller {
     private View viewer = new TextView();
     private InputValidator inputValidator = new InputValidator();
     private Reader reader = new Reader(viewer, inputValidator);
-    private int userId;
+    private User user;
     private Basket basket;
 
     public Controller() {
-        userId = 2;
-        basket = new Basket(userId);        // Temporary solution before log in handler is coded
+        user = new User(2, "customer");
+        basket = new Basket(user.getId());        // Temporary solution before log in handler is coded
     }
 
     public void runner() {
@@ -37,7 +38,7 @@ public class Controller {
         while(!exitApp) {
             viewer.clearScreen();
 
-            if(userId == 0) {
+            if(user.getId() == 0) {
                 viewer.displayMenu("e. Exit, s. Show products, li. Login, r. Register");
             } else {
                 viewer.displayMenu("e. Exit, s. Place order, lo. Log out, b. Basket");
@@ -52,12 +53,12 @@ public class Controller {
                     viewer.clearScreen();
                     ProductChooser productChooser = null;
 
-                    if(userId == 0) {
+                    if(user.getId() == 0) {
                         productChooser = new ProductChooser(reader, viewer, productDao);
                     } else {
                         productChooser = new ProductChooser(reader, viewer, productDao, basket);
                     }
-                    productChooser.productController("customer");
+                    productChooser.productController(user.getType());
                     break;
                 case "b":
                     BasketOperator basketOperator = new BasketOperator(reader, viewer, orderDao);
@@ -66,7 +67,7 @@ public class Controller {
                 case "li":
                 case "lo":
 //                    Login login = new Login(reader, viewer, inputValidator, userDao);
-//                    login.controller(userId, basket);
+//                    login.controller(user, basket);
 //                    break;
                 case "r":
 //                    Register register = new Register(reader, viewer, inputValidator, userDao);

@@ -1,10 +1,7 @@
 package com.codecool.dao.SQL;
 
 import com.codecool.dao.OrderDao;
-import com.codecool.model.Basket;
-import com.codecool.model.Order;
-import com.codecool.model.OrderDetail;
-import com.codecool.model.Product;
+import com.codecool.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -64,7 +61,7 @@ public class OrderDaoSQL implements OrderDao {
             ResultSet userOrders = getUserOrders.executeQuery();
             while(userOrders.next()) {
                 int oid = userOrders.getInt("id");
-                Order order = new Order(oid);
+                Order order = new Order(userId, oid);
 
                 PreparedStatement stmt = connection.prepareStatement(
                         "SELECT orders.oid, orders.date, products.pid, products.name, products.quantity, products.price, " +

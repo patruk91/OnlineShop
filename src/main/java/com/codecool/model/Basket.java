@@ -20,10 +20,6 @@ public class Basket {
         return orderDetails;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
     public void addOrderDetails(OrderDetail orderDetail) {
         orderDetails.add(orderDetail);
     }
