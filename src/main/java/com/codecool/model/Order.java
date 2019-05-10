@@ -6,8 +6,9 @@ public class Order extends Basket {
     private Date date;
     private int orderId;
 
-    public Order(int userId) {
+    public Order(int userId, int orderId) {
         super(userId);
+        this.orderId = orderId;
     }
 
     public Date getDate() {
