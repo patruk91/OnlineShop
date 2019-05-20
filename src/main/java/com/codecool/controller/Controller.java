@@ -10,10 +10,10 @@ import com.codecool.dao.SQL.ProductDaoSQL;
 import com.codecool.dao.SQL.UserDaoSQL;
 import com.codecool.model.Basket;
 import com.codecool.model.User;
-import com.codecool.reader.Reader;
-import com.codecool.validator.InputValidator;
-import com.codecool.viewer.View;
-import com.codecool.viewer.textViewer.TextView;
+import com.codecool.view.reader.Reader;
+import com.codecool.view.validator.InputValidator;
+import com.codecool.view.viewer.View;
+import com.codecool.view.viewer.textViewer.TextView;
 
 public class Controller {
 
@@ -65,11 +65,11 @@ public class Controller {
                     break;
                 case "li":
                 case "lo":
-//                    Login login = new Login(reader, viewer, inputValidator, userDao);
+//                    Login login = new Login(reader, view, inputValidator, userDao);
 //                    login.controller(user, basket);
 //                    break;
                 case "r":
-//                    Register register = new Register(reader, viewer, inputValidator, userDao);
+//                    Register register = new Register(reader, view, inputValidator, userDao);
 //                    register.controller();
 //                    break;
                 default:

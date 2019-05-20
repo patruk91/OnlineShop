@@ -1,6 +1,6 @@
-package com.codecool.viewer.textViewer;
+package com.codecool.view.viewer.textViewer;
 
-import com.codecool.viewer.View;
+import com.codecool.view.viewer.View;
 
 public class TextView implements View {
     @Override

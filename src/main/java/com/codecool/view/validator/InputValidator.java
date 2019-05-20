@@ -1,4 +1,4 @@
-package com.codecool.validator;
+package com.codecool.view.validator;
 
 public class InputValidator {
     public boolean isInputEmpty(String input) {
