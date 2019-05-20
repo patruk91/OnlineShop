@@ -2,8 +2,8 @@ package com.codecool.controller.handler;
 
 import com.codecool.dao.OrderDao;
 import com.codecool.model.Basket;
-import com.codecool.reader.Reader;
-import com.codecool.viewer.View;
+import com.codecool.view.reader.Reader;
+import com.codecool.view.viewer.View;
 
 public class BasketOperator {
     private Reader reader;

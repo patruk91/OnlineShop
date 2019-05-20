@@ -1,7 +1,7 @@
-package com.codecool.reader;
+package com.codecool.view.reader;
 
-import com.codecool.validator.InputValidator;
-import com.codecool.viewer.View;
+import com.codecool.view.validator.InputValidator;
+import com.codecool.view.viewer.View;
 
 import java.util.Scanner;
 import java.util.Set;
