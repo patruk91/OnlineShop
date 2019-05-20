@@ -2,6 +2,7 @@ package com.codecool.dao.SQL;
 
 import com.codecool.dao.ProductDao;
 import com.codecool.model.Product;
+import jdk.jfr.Category;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -124,15 +125,19 @@ public class ProductDaoSQL implements ProductDao {
         TreeMap<String, Integer> categories = new TreeMap<>();
         try {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories");
-            ResultSet resultSet = stmt.executeQuery();
-            while (resultSet.next()) {
-                int categoryId = resultSet.getInt("cid");
-                String name = resultSet.getString("categoryName");
-                categories.put(name, categoryId);
-            }
+            addCategory(stmt, categories);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return categories;
+    }
+
+    private void addCategory(PreparedStatement stmt, TreeMap<String, Integer> categories) throws SQLException {
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet.next()) {
+            int categoryId = resultSet.getInt("cid");
+            String name = resultSet.getString("categoryName");
+            categories.put(name, categoryId);
+        }
     }
 }
