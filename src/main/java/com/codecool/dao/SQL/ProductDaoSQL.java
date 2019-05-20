@@ -15,25 +15,28 @@ public class ProductDaoSQL implements ProductDao {
     @Override
     public void createProduct(Product product) {
         Connection connection = DatabaseConnection.getConntectionToDatabase();
-
         try {
             PreparedStatement stmt = connection.prepareStatement(
                     "INSERT INTO products(name, quantity, price, status, categoryId) VALUES(?, ?, ?, ?. ?);");
-            stmt.setString(1, product.getName());
-            stmt.setInt(2, product.getAmount());
-            stmt.setDouble(3, product.getPrice());
-            stmt.setBoolean(4, product.isStatus());
-            stmt.setInt(5, product.getCategoryId());
-            stmt.executeUpdate();
-
+            insertProductData(stmt, product);
             stmt.close();
             connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
+
+    private void insertProductData(PreparedStatement stmt, Product product) throws SQLException {
+        stmt.setString(1, product.getName());
+        stmt.setInt(2, product.getAmount());
+        stmt.setDouble(3, product.getPrice());
+        stmt.setBoolean(4, product.isStatus());
+        stmt.setInt(5, product.getCategoryId());
+        stmt.executeUpdate();
+    }
+
+
 
     @Override
     public List<Product> readProduct(String column, String data) {
