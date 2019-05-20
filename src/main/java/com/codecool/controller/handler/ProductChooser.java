@@ -32,7 +32,7 @@ public class ProductChooser {
     public void productController(String userType) {
         boolean backToMenu = false;
         final int START = 1;
-        int end = userType.equals("anonymous") ?  3 :  4;
+        int end = userType.equals("anonymous") ?  3 : 4;
         while (!backToMenu) {
             displayMenu(userType);
             view.displayQuestion("Choose menu option");
@@ -89,25 +89,57 @@ public class ProductChooser {
     }
 
     private void addProductToBasket(String userType) {
-        if (userType.equals("customer") && products.size() > 0) {
+        if (userType.equals("customer")) {
             view.displayMessage("Enter product name: ");
-            String productNameBasket = reader.getNotEmptyString();
-            if (productOnList(productNameBasket)) {
-                view.displayMessage("Enter product amount: ");
-                int quantity = reader.getNumberInRange(1, getProductByName(productNameBasket).getAmount());
-                if (basket.getOrderDetails().size() > 0 && checkIfProductIsInBasket(productNameBasket)) {
-                    updateProductInBasket(productNameBasket, quantity);
-                } else {
-                    basket.addOrderDetails(new OrderDetail(getProductByName(productNameBasket), quantity));
-                }
-
-                view.clearScreen();
-            } else {
-                view.displayMessage("No product available by that name!");
-            }
-        } else {
-            view.displayMessage("No product on list!");
+            String productNameInBasket = reader.getNotEmptyString();
+            ifProductOnList(productNameInBasket);
         }
+    }
+
+    private void ifProductOnList(String productNameInBasket) {
+        if (productOnList(productNameInBasket)) {
+            int quantity = getQuantity(productNameInBasket);
+            ifProductInBasket(productNameInBasket, quantity);
+            view.clearScreen();
+        } else {
+            view.displayMessage("No product available by that name!");
+        }
+    }
+
+    private int getQuantity(String productNameInBasket) {
+        view.displayMessage("Enter product amount: ");
+        return reader.getNumberInRange(1, getProductByName(productNameInBasket).getAmount());
+    }
+
+    private void ifProductInBasket(String productNameInBasket, int quantity) {
+        if (basket.getOrderDetails().size() > 0 && checkIfProductIsInBasket(productNameInBasket)) {
+            addProductIfEnoughAmountInStock(productNameInBasket, quantity);
+        } else {
+            basket.addOrderDetails(new OrderDetail(getProductByName(productNameInBasket), quantity));
+        }
+    }
+
+    private void addProductIfEnoughAmountInStock(String productNameInBasket, int quantity) {
+        if (isExceedStock(productNameInBasket, quantity)) {
+            updateProductInBasket(productNameInBasket, quantity);
+        } else {
+            view.displayMessage("Not enough amount of product in our shop!");
+        }
+    }
+
+    private boolean isExceedStock(String productNameInBasket, int quantity) {
+        OrderDetail userOrder = getOrderDetailFromBasket(productNameInBasket);
+        int maxAmount = userOrder.getProduct().getAmount();
+        return quantity + userOrder.getQuantity() < maxAmount;
+    }
+
+    private OrderDetail getOrderDetailFromBasket(String productNameInBasket) throws IllegalArgumentException {
+        for (OrderDetail orderDetail : basket.getOrderDetails()) {
+            if (orderDetail.getProduct().getName().equalsIgnoreCase(productNameInBasket)) {
+                return orderDetail;
+            }
+        }
+        throw new IllegalArgumentException("Order detail doesn't exist in basket!");
     }
 
     private boolean checkIfProductIsInBasket(String productNameBasket) {
@@ -127,6 +159,27 @@ public class ProductChooser {
         }
     }
 
+    private boolean productOnList(String name) {
+        for (Product product : products) {
+            if (name.toLowerCase().equals(product.getName().toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Product getProductByName(String name) throws IllegalArgumentException {
+        for (Product product : products) {
+            if (product.getName().toLowerCase().equals(name.toLowerCase())) {
+                return product;
+            }
+        }
+        throw new IllegalArgumentException("No product by that name!");
+    }
+
+
+
+
     private void displayCategories(TreeMap<String, Integer> categories){
         StringBuilder sb = new StringBuilder();
         for (String category : categories.keySet()) {
@@ -144,23 +197,5 @@ public class ProductChooser {
         }
         view.clearScreen();
         view.displayTable(sb.toString());
-    }
-
-    private boolean productOnList(String name) {
-        for (Product product : products) {
-            if (name.toLowerCase().equals(product.getName().toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Product getProductByName(String name) {
-        for (Product product : products) {
-            if (product.getName().toLowerCase().equals(name.toLowerCase())) {
-                return product;
-            }
-        }
-        return new Product(0,"",0,0,false,0);
     }
 }

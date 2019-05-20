@@ -46,7 +46,7 @@ public class Reader {
     public int getNumberInRange(int start, int end) {
         int number = Integer.parseInt(getNumberAsString());
         while (!inputValidator.isInRange(number, start, end)) {
-            view.displayError("Please, provide number in range");
+            view.displayError("Please, provide number in range: " + start + "-" + end);
             number = Integer.parseInt(getNumberAsString());
         }
         return number;
