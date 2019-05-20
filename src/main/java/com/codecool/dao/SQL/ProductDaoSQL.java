@@ -21,7 +21,6 @@ public class ProductDaoSQL implements ProductDao {
             insertProductData(stmt, product);
             stmt.close();
             connection.close();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -36,32 +35,15 @@ public class ProductDaoSQL implements ProductDao {
         stmt.executeUpdate();
     }
 
-
-
     @Override
     public List<Product> readProduct(String column, String data) {
         Connection connection = DatabaseConnection.getConntectionToDatabase();
         List<Product> products = new ArrayList<>();
-
         try {
             PreparedStatement stmt = connection.prepareStatement(
                     "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" LIKE ?");
             stmt.setString(1, "%" + data + "%");
-
-
-            ResultSet resultSet = stmt.executeQuery();
-
-            while (resultSet.next()) {
-                int productId = resultSet.getInt("pid");
-                String name = resultSet.getString("name");
-                int quantity = resultSet.getInt("quantity");
-                double price = resultSet.getDouble("price");
-                boolean status = resultSet.getString("status").equals("active");
-                int categoryId = resultSet.getInt("categoryId");
-
-                Product product = new Product(productId, name, quantity, price, status, categoryId);
-                products.add(product);
-            }
+            addProduct(stmt, products);
             stmt.close();
             connection.close();
         } catch (SQLException e) {
@@ -70,6 +52,22 @@ public class ProductDaoSQL implements ProductDao {
         return products;
     }
 
+    private void addProduct(PreparedStatement stmt, List<Product> products) throws SQLException {
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet.next()) {
+            int productId = resultSet.getInt("pid");
+            String name = resultSet.getString("name");
+            int quantity = resultSet.getInt("quantity");
+            double price = resultSet.getDouble("price");
+            boolean status = resultSet.getString("status").equals("active");
+            int categoryId = resultSet.getInt("categoryId");
+
+            Product product = new Product(productId, name, quantity, price, status, categoryId);
+            products.add(product);
+        }
+    }
+
+    
     @Override
     public void updateProduct(Product product, String column) {
         Connection connection = DatabaseConnection.getConntectionToDatabase();
