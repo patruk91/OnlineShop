@@ -19,7 +19,9 @@ public class ProductDaoSQL implements ProductDao {
                 "INSERT INTO products(name, quantity, price, status, categoryId) VALUES(?, ?, ?, ?. ?);")){
             insertProductData(stmt, product);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
         }
     }
 
@@ -41,7 +43,9 @@ public class ProductDaoSQL implements ProductDao {
             stmt.setString(1, "%" + data + "%");
             addProduct(stmt, products);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
         }
         return products;
     }
@@ -55,7 +59,6 @@ public class ProductDaoSQL implements ProductDao {
                 double price = resultSet.getDouble("price");
                 boolean status = resultSet.getString("status").equals("active");
                 int categoryId = resultSet.getInt("categoryId");
-
                 Product product = new Product(productId, name, quantity, price, status, categoryId);
                 products.add(product);
             }
@@ -72,31 +75,29 @@ public class ProductDaoSQL implements ProductDao {
             stmt.setInt(2, product.getProductId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
         }
     }
 
-    private void updateColumn(Product product, String column, PreparedStatement stmt) {
-        try {
-            switch (column) {
-                case "name":
-                    stmt.setString(1, product.getName());
-                    break;
-                case "quantity":
-                    stmt.setInt(1, product.getAmount());
-                    break;
-                case "price":
-                    stmt.setDouble(1, product.getPrice());
-                    break;
-                case "status":
-                    stmt.setBoolean(1, product.isStatus());
-                    break;
-                case "categoryId":
-                    stmt.setInt(1, product.getProductId());
-                    break;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    private void updateColumn(Product product, String column, PreparedStatement stmt) throws SQLException {
+        switch (column) {
+            case "name":
+                stmt.setString(1, product.getName());
+                break;
+            case "quantity":
+                stmt.setInt(1, product.getAmount());
+                break;
+            case "price":
+                stmt.setDouble(1, product.getPrice());
+                break;
+            case "status":
+                stmt.setBoolean(1, product.isStatus());
+                break;
+            case "categoryId":
+                stmt.setInt(1, product.getProductId());
+                break;
         }
     }
 
@@ -107,7 +108,9 @@ public class ProductDaoSQL implements ProductDao {
                      "DELETE FROM products WHERE pid = ?")) {
             removeOrder.setInt(1, product.getProductId());
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
         }
     }
 
@@ -118,8 +121,9 @@ public class ProductDaoSQL implements ProductDao {
              PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories")) {
             addCategory(stmt, categories);
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());        }
         return categories;
     }
 
