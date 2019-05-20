@@ -82,14 +82,16 @@ public class ProductChooser {
 
     private void displayProductsByName() {
         view.clearScreen();
-        String productName = reader.getStringFromUser("Enter product name");
+        view.displayMessage("Enter product name: ");
+        String productName = reader.getNotEmptyString();
         products = productDao.readProduct("name", productName);
         displayProducts();
     }
 
     private void addProductToBasket(String userType) {
         if (userType.equals("customer") && products.size() > 0) {
-            String productNameBasket = reader.getStringFromUser("Enter product name");
+            view.displayMessage("Enter product name: ");
+            String productNameBasket = reader.getNotEmptyString();
             if (productOnList(productNameBasket)) {
                 view.displayMessage("Enter product amount: ");
                 int quantity = reader.getNumberInRange(1, getProductByName(productNameBasket).getAmount());
