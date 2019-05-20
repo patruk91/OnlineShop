@@ -1,9 +1,7 @@
 package com.codecool.controller;
 
 import com.codecool.controller.handler.BasketOperator;
-import com.codecool.controller.handler.Login;
 import com.codecool.controller.handler.ProductChooser;
-import com.codecool.controller.handler.Register;
 import com.codecool.dao.UserDao;
 import com.codecool.dao.OrderDao;
 import com.codecool.dao.ProductDao;
@@ -44,7 +42,8 @@ public class Controller {
                 viewer.displayMenu("e. Exit, s. Place order, lo. Log out, b. Basket");
             }
 
-            String option = reader.getStringFromUser("Choose menu option");
+            viewer.displayQuestion("Choose menu option");
+            String option = reader.getNotEmptyString();
             switch(option) {
                 case "e":
                     exitApp = true;

@@ -21,59 +21,53 @@ public class Reader {
         return scanner.nextLine().trim();
     }
 
-    public String getStringFromUser(String question) {
-        String userInput = "";
-        while (userInput.isBlank()){
-            this.view.displayQuestion(question);
-            userInput = this.getInput();
-            if (userInput.isBlank()){
-                view.displayError("Please, provide correct data");
+    public String getNotEmptyString() {
+        String input = "";
+        while (inputValidator.isInputEmpty(input)) {
+            input = getInput();
+            if (inputValidator.isInputEmpty(input)) {
+                view.displayError("Please, provide not empty data");
             }
         }
-        return userInput;
+        return input;
+    }
+
+    private String getNumberAsString() {
+        String input = "";
+        while (!inputValidator.isNumber(input)) {
+            input = getNotEmptyString();
+            if (!inputValidator.isNumber(input)) {
+                view.displayError("Please, provide numeric data");
+            }
+        }
+        return input;
     }
 
     public int getNumberInRange(int start, int end) {
-        while (true) {
-            String input = getInput();
-            if(inputValidator.isInputEmpty(input) && inputValidator.isNumber(input)) {
-                int numInput = Integer.parseInt(input);
-                if(inputValidator.isInRange(numInput, start, end)) {
-                    return numInput;
-                } else {
-                    view.displayError("Please, provide correct data");
-                }
-            } else {
-                view.displayError("Please, provide correct data");
-            }
+        int number = Integer.parseInt(getNumberAsString());
+        while (!inputValidator.isInRange(number, start, end)) {
+            view.displayError("Please, provide number in range");
+            number = Integer.parseInt(getNumberAsString());
         }
+        return number;
     }
 
     public double getNumberInRange(double start, double end) {
-        while (true) {
-            String input = getInput();
-            if(inputValidator.isInputEmpty(input) && inputValidator.isNumber(input)) {
-                double numInput = Double.parseDouble(input);
-                if(inputValidator.isInRange(numInput, start, end)) {
-                    return numInput;
-                } else {
-                    view.displayError("Please, provide correct data");
-                }
-            } else {
-                view.displayError("Please, provide correct data");
-            }
+        double number = Double.parseDouble(getNumberAsString());
+        while (!inputValidator.isInRange(number, start, end)) {
+            view.displayError("Please, provide number in range");
+            number = Double.parseDouble(getNumberAsString());
         }
+        return number;
     }
 
     public String getCategoryFromUser(Set<String> categories) {
-        String userInput = "";
-        while (userInput.isBlank()){
-            this.view.displayQuestion("Choose category");
-            userInput = this.getInput();
-            if (userInput.isBlank() && !categories.contains(userInput.toUpperCase())){
-                view.displayError("Please, provide correct data");
-            }
+        view.displayQuestion("Choose category");
+        String input = getNotEmptyString();
+        while (!categories.contains(input.toUpperCase())) {
+            view.displayError("Please, provide correct category");
+            input = getNotEmptyString();
         }
-        return userInput;
+        return input;
     }
 }

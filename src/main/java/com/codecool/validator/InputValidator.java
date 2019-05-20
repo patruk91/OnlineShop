@@ -2,7 +2,7 @@ package com.codecool.validator;
 
 public class InputValidator {
     public boolean isInputEmpty(String input) {
-        return !input.isBlank();
+        return input.isBlank();
     }
 
     public boolean isNumber(String input) {

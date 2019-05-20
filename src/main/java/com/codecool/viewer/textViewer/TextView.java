@@ -15,7 +15,7 @@ public class TextView implements View {
 
     @Override
     public void displayError(String error) {
-        System.out.println("Error: " + error);
+        System.out.println("Error: " + error + "!");
     }
 
     @Override
