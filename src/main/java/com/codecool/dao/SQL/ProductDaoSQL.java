@@ -37,29 +37,30 @@ public class ProductDaoSQL implements ProductDao {
         List<Product> products = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConntectionToDatabase();
              PreparedStatement stmt = connection.prepareStatement(
-                     "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" LIKE ?");
-             ResultSet resultSet = stmt.executeQuery()) {
-
+                     "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" LIKE ?")) {
             stmt.setString(1, "%" + data + "%");
-            addProduct(resultSet, products);
+            addProduct(stmt, products);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return products;
     }
 
-    private void addProduct(ResultSet resultSet, List<Product> products) throws SQLException {
-        while (resultSet.next()) {
-            int productId = resultSet.getInt("pid");
-            String name = resultSet.getString("name");
-            int quantity = resultSet.getInt("quantity");
-            double price = resultSet.getDouble("price");
-            boolean status = resultSet.getString("status").equals("active");
-            int categoryId = resultSet.getInt("categoryId");
+    private void addProduct(PreparedStatement stmt, List<Product> products) throws SQLException {
+        try (ResultSet resultSet = stmt.executeQuery()) {
+            while (resultSet.next()) {
+                int productId = resultSet.getInt("pid");
+                String name = resultSet.getString("name");
+                int quantity = resultSet.getInt("quantity");
+                double price = resultSet.getDouble("price");
+                boolean status = resultSet.getString("status").equals("active");
+                int categoryId = resultSet.getInt("categoryId");
 
-            Product product = new Product(productId, name, quantity, price, status, categoryId);
-            products.add(product);
+                Product product = new Product(productId, name, quantity, price, status, categoryId);
+                products.add(product);
+            }
         }
+
     }
 
     @Override
@@ -114,22 +115,21 @@ public class ProductDaoSQL implements ProductDao {
     public TreeMap<String, Integer> getCategories() {
         TreeMap<String, Integer> categories = new TreeMap<>();
         try (Connection connection = DatabaseConnection.getConntectionToDatabase();
-             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories");
-             ResultSet resultSet = stmt.executeQuery()) {
-
-            addCategory(resultSet, categories);
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories")) {
+            addCategory(stmt, categories);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return categories;
     }
 
-    private void addCategory(ResultSet resultSet, TreeMap<String, Integer> categories) throws SQLException {
-
-        while (resultSet.next()) {
-            int categoryId = resultSet.getInt("cid");
-            String name = resultSet.getString("categoryName");
-            categories.put(name, categoryId);
+    private void addCategory(PreparedStatement stmt, TreeMap<String, Integer> categories) throws SQLException {
+        try (ResultSet resultSet = stmt.executeQuery()) {
+            while (resultSet.next()) {
+                int categoryId = resultSet.getInt("cid");
+                String name = resultSet.getString("categoryName");
+                categories.put(name, categoryId);
+            }
         }
     }
 }
