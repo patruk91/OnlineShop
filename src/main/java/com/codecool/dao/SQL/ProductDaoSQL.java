@@ -15,15 +15,16 @@ import java.util.TreeMap;
 public class ProductDaoSQL implements ProductDao {
     @Override
     public void createProduct(Product product) {
-        Connection connection = DatabaseConnection.getConntectionToDatabase();
-        try {
+
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase()){
             PreparedStatement stmt = connection.prepareStatement(
                     "INSERT INTO products(name, quantity, price, status, categoryId) VALUES(?, ?, ?, ?. ?);");
             insertProductData(stmt, product);
             stmt.close();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+
         }
     }
 
@@ -38,15 +39,13 @@ public class ProductDaoSQL implements ProductDao {
 
     @Override
     public List<Product> readProduct(String column, String data) {
-        Connection connection = DatabaseConnection.getConntectionToDatabase();
         List<Product> products = new ArrayList<>();
-        try {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase()) {
             PreparedStatement stmt = connection.prepareStatement(
                     "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" LIKE ?");
             stmt.setString(1, "%" + data + "%");
             addProduct(stmt, products);
             stmt.close();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -70,15 +69,13 @@ public class ProductDaoSQL implements ProductDao {
 
     @Override
     public void updateProduct(Product product, String column) {
-        Connection connection = DatabaseConnection.getConntectionToDatabase();
-        try {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase()) {
             PreparedStatement stmt = connection.prepareStatement(
                     "UPDATE products set " +  column + " = ? WHERE id = ?");
             updateColumn(product, column, stmt);
             stmt.setInt(2, product.getProductId());
             stmt.executeUpdate();
             stmt.close();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -110,8 +107,7 @@ public class ProductDaoSQL implements ProductDao {
 
     @Override
     public void deleteProduct(Product product) {
-        Connection connection = DatabaseConnection.getConntectionToDatabase();
-        try {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase()) {
             PreparedStatement removeOrder = connection.prepareStatement("DELETE FROM products WHERE pid = ?");
             removeOrder.setInt(1, product.getProductId());
         } catch (SQLException e) {
@@ -121,9 +117,8 @@ public class ProductDaoSQL implements ProductDao {
 
     @Override
     public TreeMap<String, Integer> getCategories() {
-        Connection connection = DatabaseConnection.getConntectionToDatabase();
         TreeMap<String, Integer> categories = new TreeMap<>();
-        try {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase()) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories");
             addCategory(stmt, categories);
         } catch (SQLException e) {
