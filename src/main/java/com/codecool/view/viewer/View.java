@@ -1,4 +1,4 @@
-package com.codecool.viewer;
+package com.codecool.view.viewer;
 
 public interface View {
     void displayMessage(String message);

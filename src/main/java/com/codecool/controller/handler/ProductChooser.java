@@ -4,8 +4,8 @@ import com.codecool.dao.ProductDao;
 import com.codecool.model.Basket;
 import com.codecool.model.OrderDetail;
 import com.codecool.model.Product;
-import com.codecool.reader.Reader;
-import com.codecool.viewer.View;
+import com.codecool.view.reader.Reader;
+import com.codecool.view.viewer.View;
 
 import java.util.ArrayList;
 import java.util.List;
