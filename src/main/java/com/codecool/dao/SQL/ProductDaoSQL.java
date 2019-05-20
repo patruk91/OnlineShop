@@ -67,18 +67,15 @@ public class ProductDaoSQL implements ProductDao {
         }
     }
 
-    
     @Override
     public void updateProduct(Product product, String column) {
         Connection connection = DatabaseConnection.getConntectionToDatabase();
-
         try {
             PreparedStatement stmt = connection.prepareStatement(
                     "UPDATE products set " +  column + " = ? WHERE id = ?");
-            updateDataForProduct(product, column, stmt);
+            updateColumn(product, column, stmt);
             stmt.setInt(2, product.getProductId());
             stmt.executeUpdate();
-
             stmt.close();
             connection.close();
         } catch (SQLException e) {
@@ -86,7 +83,7 @@ public class ProductDaoSQL implements ProductDao {
         }
     }
 
-    private void updateDataForProduct(Product product, String column, PreparedStatement stmt) {
+    private void updateColumn(Product product, String column, PreparedStatement stmt) {
         try {
             switch (column) {
                 case "name":
