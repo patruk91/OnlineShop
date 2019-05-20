@@ -2,7 +2,6 @@ package com.codecool.dao.SQL;
 
 import com.codecool.dao.ProductDao;
 import com.codecool.model.Product;
-import jdk.jfr.Category;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,16 +14,12 @@ import java.util.TreeMap;
 public class ProductDaoSQL implements ProductDao {
     @Override
     public void createProduct(Product product) {
-
-        try (Connection connection = DatabaseConnection.getConntectionToDatabase()){
-            PreparedStatement stmt = connection.prepareStatement(
-                    "INSERT INTO products(name, quantity, price, status, categoryId) VALUES(?, ?, ?, ?. ?);");
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                "INSERT INTO products(name, quantity, price, status, categoryId) VALUES(?, ?, ?, ?. ?);")){
             insertProductData(stmt, product);
-            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-
         }
     }
 
@@ -40,20 +35,20 @@ public class ProductDaoSQL implements ProductDao {
     @Override
     public List<Product> readProduct(String column, String data) {
         List<Product> products = new ArrayList<>();
-        try (Connection connection = DatabaseConnection.getConntectionToDatabase()) {
-            PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" LIKE ?");
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                     "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" LIKE ?");
+             ResultSet resultSet = stmt.executeQuery()) {
+
             stmt.setString(1, "%" + data + "%");
-            addProduct(stmt, products);
-            stmt.close();
+            addProduct(resultSet, products);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return products;
     }
 
-    private void addProduct(PreparedStatement stmt, List<Product> products) throws SQLException {
-        ResultSet resultSet = stmt.executeQuery();
+    private void addProduct(ResultSet resultSet, List<Product> products) throws SQLException {
         while (resultSet.next()) {
             int productId = resultSet.getInt("pid");
             String name = resultSet.getString("name");
@@ -69,13 +64,12 @@ public class ProductDaoSQL implements ProductDao {
 
     @Override
     public void updateProduct(Product product, String column) {
-        try (Connection connection = DatabaseConnection.getConntectionToDatabase()) {
-            PreparedStatement stmt = connection.prepareStatement(
-                    "UPDATE products set " +  column + " = ? WHERE id = ?");
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                "UPDATE products set " +  column + " = ? WHERE id = ?")) {
             updateColumn(product, column, stmt);
             stmt.setInt(2, product.getProductId());
             stmt.executeUpdate();
-            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -107,8 +101,9 @@ public class ProductDaoSQL implements ProductDao {
 
     @Override
     public void deleteProduct(Product product) {
-        try (Connection connection = DatabaseConnection.getConntectionToDatabase()) {
-            PreparedStatement removeOrder = connection.prepareStatement("DELETE FROM products WHERE pid = ?");
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement removeOrder = connection.prepareStatement(
+                     "DELETE FROM products WHERE pid = ?")) {
             removeOrder.setInt(1, product.getProductId());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -118,17 +113,19 @@ public class ProductDaoSQL implements ProductDao {
     @Override
     public TreeMap<String, Integer> getCategories() {
         TreeMap<String, Integer> categories = new TreeMap<>();
-        try (Connection connection = DatabaseConnection.getConntectionToDatabase()) {
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories");
-            addCategory(stmt, categories);
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories");
+             ResultSet resultSet = stmt.executeQuery()) {
+
+            addCategory(resultSet, categories);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return categories;
     }
 
-    private void addCategory(PreparedStatement stmt, TreeMap<String, Integer> categories) throws SQLException {
-        ResultSet resultSet = stmt.executeQuery();
+    private void addCategory(ResultSet resultSet, TreeMap<String, Integer> categories) throws SQLException {
+
         while (resultSet.next()) {
             int categoryId = resultSet.getInt("cid");
             String name = resultSet.getString("categoryName");
