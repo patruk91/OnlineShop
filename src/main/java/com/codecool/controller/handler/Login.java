@@ -23,10 +23,14 @@ public class Login {
         if(user.getType().equals("anonymous")) {
             loginUser(user, basket);
         } else {
-            user.setId(0);
-            user.setType("anonymous");
-            basket.setUserId(0);
+            logOutUser(user, basket);
         }
+    }
+
+    private void logOutUser(User user, Basket basket) {
+        user.setId(0);
+        user.setType("anonymous");
+        basket.setUserId(0);
     }
 
     private void loginUser(User user, Basket basket) {
