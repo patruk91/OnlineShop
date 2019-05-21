@@ -78,6 +78,26 @@ public class UserDaoSQL implements UserDao {
         return false;
     }
 
+    public boolean isPasswordCorrect(String login, String password) throws SQLException {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement getPassword = connection.prepareStatement(
+                     "SELECT userPassword FROM usersCredentials WHERE userLogin = ?")) {
+            getPassword.setString(1, login);
+
+            try (ResultSet rs = getPassword.executeQuery()) {
+                String passwordFromDatabase = "";
+                while (rs.next()) {
+                    passwordFromDatabase = rs.getString("userPassword");
+                }
+
+                if(!passwordFromDatabase.isBlank() && passwordFromDatabase.equals(password)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void insertUserData(PreparedStatement stmt, String login, String password) throws SQLException {
         stmt.setString(1, login);
         stmt.setString(2, password);
