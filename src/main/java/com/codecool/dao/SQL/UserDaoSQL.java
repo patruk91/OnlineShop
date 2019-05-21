@@ -13,24 +13,63 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoSQL implements UserDao {
-    private List<User> users = new ArrayList<>();
-
     @Override
     public void createUser(String login, String password) {
         if (!isUserInDatabase(login)) {
             try (Connection connection = DatabaseConnection.getConntectionToDatabase();
-                 PreparedStatement stmt = connection.prepareStatement(
-                         "INSERT INTO products(login, password) VALUES(?, ?, ?, ?. ?);")){
-                insertUserData(stmt, login, password);
+                 PreparedStatement insertUser = connection.prepareStatement(
+                         "INSERT INTO usersCredentials(login, password) VALUES(?, ?)");
+                 PreparedStatement insertDetails = connection.prepareStatement(
+                         "INSERT INTO usersDetails(name, lastName) VALUES(NULL, NULL)");
+                 PreparedStatement insertUserBase = connection.prepareStatement(
+                         "INSERT INTO users(typeId, credentialsId, detailsId) VALUES(2, ?, ?)")){
+                insertUserData(insertUser, login, password);
+                insertDetails.executeUpdate();
+
+                insertUserBase.setInt(1, getLastCredentialsId(connection));
+                insertDetails.setInt(2, getLastDetailsId(connection));
+                insertUserBase.executeUpdate();
+
+                
             } catch (SQLException e) {
                 System.out.println("SQLException: " + e.getMessage()
                         + "\nSQLState: " + e.getSQLState()
                         + "\nVendorError: " + e.getErrorCode());
             }
         }
+
+    }
+
+    private int getLastCredentialsId(Connection connection) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT ucid FROM usersCredentials ORDER BY ucid DESC limit 1")) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                int orderId = 1;
+                while (rs.next()) {
+                    orderId = rs.getInt("ucid");
+                }
+
+                return orderId;
+            }
+        }
+    }
+
+    private int getLastDetailsId(Connection connection) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT udid FROM usersDetails ORDER BY udid DESC limit 1")) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                int orderId = 1;
+                while (rs.next()) {
+                    orderId = rs.getInt("udid");
+                }
+
+                return orderId;
+            }
+        }
     }
 
     private boolean isUserInDatabase(String login) {
+        List<User> users = readUser("customer");
         for (User user : users) {
             if (user.getLogin().equalsIgnoreCase(login)) {
                 return true;
@@ -45,8 +84,12 @@ public class UserDaoSQL implements UserDao {
         stmt.executeUpdate();
     }
 
+
+
+
     @Override
     public List<User> readUser(String userType) {
+        List<User> users = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConntectionToDatabase();
              PreparedStatement stmt = connection.prepareStatement(
                      "SELECT uid, userLogin, name, lastName, userType, street, country, zipCode, city" +
