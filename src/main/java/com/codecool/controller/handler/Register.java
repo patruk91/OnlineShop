@@ -16,10 +16,9 @@ public class Register {
     }
 
     public void controller() {
-        viewer.displayQuestion("Insert your login");
         String login = getUserLogin();
-        viewer.displayQuestion("Insert your password");
         String password = getUserPassword();
+        
         if(!userDao.isUserInDatabase(login)) {
             userDao.createUser(login, password);
         } else {
@@ -29,10 +28,12 @@ public class Register {
     }
 
     private String getUserLogin() {
+        viewer.displayQuestion("Insert your login");
         return reader.getNotEmptyString();
     }
 
     private String getUserPassword() {
+        viewer.displayQuestion("Insert your password");
         return reader.getNotEmptyString();
     }
 }
