@@ -46,17 +46,16 @@ public class Controller {
 //        users.add(user2);
 //        users.add(user3);
 
-        Product product1 = new Product(1,"gra szczelanka", 45, 23.43, true, 2);
-        Product product2 = new Product(1,"gra ścigałka", 11, 123.3, false, 1);
-        List<Product> products = new ArrayList<>();
-        products.add(product1);
-        products.add(product2);
-
-        viewer.displayProductsForUser(products);
-
-
-
-
+//        Product product1 = new Product(1,"gra szczelanka", 45, 23.43, true, 2);
+//        Product product2 = new Product(1,"gra ścigałka", 11, 123.3, false, 1);
+//        List<Product> products = new ArrayList<>();
+//        products.add(product1);
+//        products.add(product2);
+//
+//        viewer.displayProductsForUser(products);
+//        System.out.println();
+//        System.out.println();
+//        viewer.displayProductsForAdmin(products);
 
 
 

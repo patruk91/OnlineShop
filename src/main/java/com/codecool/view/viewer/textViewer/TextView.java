@@ -4,6 +4,7 @@ import com.codecool.model.Product;
 import com.codecool.view.viewer.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TextView implements View {
     @Override
@@ -33,7 +34,7 @@ public class TextView implements View {
     }
 
     @Override
-    public void displayProductsForUser(ArrayList<Product> products) {
+    public void displayProductsForUser(List<Product> products) {
         String[] headers = {"ID", "Name", "Price", "Amount"};
         String[][] list = new String[products.size()][];
         int idInTable = 1;
@@ -50,7 +51,7 @@ public class TextView implements View {
     }
 
     @Override
-    public void displayProductsForAdmin(ArrayList<Product> products) {
+    public void displayProductsForAdmin(List<Product> products) {
         String[] headers = {"ID", "Name", "Price", "Amount","Status", "CategoryID"};
         String[][] list = new String[products.size()][];
         int idInTable = 1;
@@ -64,5 +65,10 @@ public class TextView implements View {
             id++;
         }
         System.out.println(FlipTable.of(headers, list));
+    }
+
+    @Override
+    public void displayCategories(String[] headers, String[][] table) {
+        System.out.println(FlipTable.of(headers, table));
     }
 }
