@@ -18,7 +18,7 @@ public class UserDaoSQL implements UserDao {
         if (!isUserInDatabase(login)) {
             try (Connection connection = DatabaseConnection.getConntectionToDatabase();
                  PreparedStatement insertUser = connection.prepareStatement(
-                         "INSERT INTO usersCredentials(login, password) VALUES(?, ?)");
+                         "INSERT INTO usersCredentials(userLogin, userPassword) VALUES(?, ?)");
                  PreparedStatement insertDetails = connection.prepareStatement(
                          "INSERT INTO usersDetails(name, lastName) VALUES(NULL, NULL)");
                  PreparedStatement insertUserBase = connection.prepareStatement(
@@ -27,7 +27,7 @@ public class UserDaoSQL implements UserDao {
                 insertDetails.executeUpdate();
 
                 insertUserBase.setInt(1, getLastCredentialsId(connection));
-                insertDetails.setInt(2, getLastDetailsId(connection));
+                insertUserBase.setInt(2, getLastDetailsId(connection));
                 insertUserBase.executeUpdate();
 
                 
@@ -68,7 +68,7 @@ public class UserDaoSQL implements UserDao {
         }
     }
 
-    private boolean isUserInDatabase(String login) {
+    public boolean isUserInDatabase(String login) {
         List<User> users = readUser("customer");
         for (User user : users) {
             if (user.getLogin().equalsIgnoreCase(login)) {

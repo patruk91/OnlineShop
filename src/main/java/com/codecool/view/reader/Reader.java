@@ -70,4 +70,10 @@ public class Reader {
         }
         return input;
     }
+
+    public void promptEnterKey(){
+        view.displayMessage("Press 'ENTER' to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
+    }
 }

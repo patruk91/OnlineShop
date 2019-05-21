@@ -2,6 +2,7 @@ package com.codecool.controller;
 
 import com.codecool.controller.handler.BasketOperator;
 import com.codecool.controller.handler.ProductChooser;
+import com.codecool.controller.handler.Register;
 import com.codecool.dao.UserDao;
 import com.codecool.dao.OrderDao;
 import com.codecool.dao.ProductDao;
@@ -27,7 +28,7 @@ public class Controller {
     private Basket basket;
 
     public Controller() {
-        user = new User(2, "customer");
+        user = new User(0, "customer");
         basket = new Basket(user.getId());        // Temporary solution before log in handler is coded
     }
 
@@ -65,13 +66,13 @@ public class Controller {
                     break;
                 case "li":
                 case "lo":
-//                    Login login = new Login(reader, view, inputValidator, userDao);
+//                    Login login = new Login(reader, viewer, inputValidator, userDao);
 //                    login.controller(user, basket);
 //                    break;
                 case "r":
-//                    Register register = new Register(reader, view, inputValidator, userDao);
-//                    register.controller();
-//                    break;
+                    Register register = new Register(viewer, reader, userDao);
+                    register.controller();
+                    break;
                 default:
                     viewer.displayError("Please, provide correct data");
             }
