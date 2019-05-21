@@ -16,7 +16,7 @@ public class ProductDaoSQL implements ProductDao {
     public void createProduct(Product product) {
         try (Connection connection = DatabaseConnection.getConntectionToDatabase();
              PreparedStatement stmt = connection.prepareStatement(
-                "INSERT INTO products(name, quantity, price, status, categoryId) VALUES(?, ?, ?, ?. ?);")){
+                "INSERT INTO products(name, quantity, price, status, categoryId) VALUES(?, ?, ?, ?, ?);")){
             insertProductData(stmt, product);
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage()
