@@ -37,23 +37,31 @@ public class Login {
         String login = getLoginFromUser();
         String userPassword = getPasswordFromUser();
         if (userDao.isUserInDatabase(login)) {
-            try {
-                if (userDao.isPasswordCorrect(login, userPassword)) {
-                    int userId = getUserId(login);
-                    user.setId(userId);
-                    user.setType(getUserType(login));
-                    basket.setUserId(userId);
-                } else {
-                    viewer.displayError("Incorrect password");
-                }
-            } catch (SQLException e) {
-                System.out.println("SQLException: " + e.getMessage()
-                        + "\nSQLState: " + e.getSQLState()
-                        + "\nVendorError: " + e.getErrorCode());
-            }
+            checkIfPasswordIsCorrect(user, basket, login, userPassword);
         } else {
             viewer.displayError("No user by that login");
         }
+    }
+
+    private void checkIfPasswordIsCorrect(User user, Basket basket, String login, String userPassword) {
+        try {
+            if (userDao.isPasswordCorrect(login, userPassword)) {
+                loginUserWithCorrectData(user, basket, login);
+            } else {
+                viewer.displayError("Incorrect password");
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+    }
+
+    private void loginUserWithCorrectData(User user, Basket basket, String login) {
+        int userId = getUserId(login);
+        user.setId(userId);
+        user.setType(getUserType(login));
+        basket.setUserId(userId);
     }
 
     private int getUserId(String login) {
