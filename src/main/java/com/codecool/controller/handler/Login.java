@@ -53,7 +53,7 @@ public class Login {
     }
 
     private int getUserId(String login) {
-        for(User user: userDao.readUser("customer")) {
+        for(User user: userDao.readUser()) {
             if(user.getLogin().equals(login)) {
                 return user.getId();
             }
@@ -62,7 +62,7 @@ public class Login {
     }
 
     private String getUserType(String login) {
-        for(User user: userDao.readUser("customer")) {
+        for(User user: userDao.readUser()) {
             if(user.getLogin().equals(login)) {
                 return user.getType();
             }
