@@ -13,15 +13,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoSQL implements UserDao {
+    private List<User> users = new ArrayList<>();
 
     @Override
     public void createUser(String login, String password) {
+        if (!isUserInDatabase(login)) {
+            try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+                 PreparedStatement stmt = connection.prepareStatement(
+                         "INSERT INTO products(login, password) VALUES(?, ?, ?, ?. ?);")){
+                insertUserData(stmt, login, password);
+            } catch (SQLException e) {
+                System.out.println("SQLException: " + e.getMessage()
+                        + "\nSQLState: " + e.getSQLState()
+                        + "\nVendorError: " + e.getErrorCode());
+            }
+        }
+    }
 
+    private boolean isUserInDatabase(String login) {
+        for (User user : users) {
+            if (user.getLogin().equalsIgnoreCase(login)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void insertUserData(PreparedStatement stmt, String login, String password) throws SQLException {
+        stmt.setString(1, login);
+        stmt.setString(2, password);
+        stmt.executeUpdate();
     }
 
     @Override
     public List<User> readUser(String userType) {
-        List<User> users = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConntectionToDatabase();
              PreparedStatement stmt = connection.prepareStatement(
                      "SELECT uid, userLogin, name, lastName, userType, street, country, zipCode, city" +
