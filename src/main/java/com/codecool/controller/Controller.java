@@ -1,6 +1,7 @@
 package com.codecool.controller;
 
 import com.codecool.controller.handler.BasketOperator;
+import com.codecool.controller.handler.Login;
 import com.codecool.controller.handler.ProductChooser;
 import com.codecool.controller.handler.Register;
 import com.codecool.dao.UserDao;
@@ -28,8 +29,8 @@ public class Controller {
     private Basket basket;
 
     public Controller() {
-        user = new User(0, "customer");
-        basket = new Basket(user.getId());        // Temporary solution before log in handler is coded
+        user = new User(0, "anonymous");
+        basket = new Basket(0);
     }
 
     public void runner() {
@@ -66,9 +67,9 @@ public class Controller {
                     break;
                 case "li":
                 case "lo":
-//                    Login login = new Login(reader, viewer, inputValidator, userDao);
-//                    login.controller(user, basket);
-//                    break;
+                    Login login = new Login(reader, viewer, userDao);
+                    login.controller(user, basket);
+                    break;
                 case "r":
                     Register register = new Register(viewer, reader, userDao);
                     register.controller();

@@ -24,6 +24,10 @@ public class Basket {
         orderDetails.add(orderDetail);
     }
 
+    public void setUserId(int userid) {
+        this.userId = userid;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

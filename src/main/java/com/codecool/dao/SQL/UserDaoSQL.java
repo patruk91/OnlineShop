@@ -69,10 +69,30 @@ public class UserDaoSQL implements UserDao {
     }
 
     public boolean isUserInDatabase(String login) {
-        List<User> users = readUser("customer");
+        List<User> users = readUser();
         for (User user : users) {
             if (user.getLogin().equalsIgnoreCase(login)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isPasswordCorrect(String login, String password) throws SQLException {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement getPassword = connection.prepareStatement(
+                     "SELECT userPassword FROM usersCredentials WHERE userLogin = ?")) {
+            getPassword.setString(1, login);
+
+            try (ResultSet rs = getPassword.executeQuery()) {
+                String passwordFromDatabase = "";
+                while (rs.next()) {
+                    passwordFromDatabase = rs.getString("userPassword");
+                }
+
+                if(!passwordFromDatabase.isBlank() && passwordFromDatabase.equals(password)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -88,7 +108,7 @@ public class UserDaoSQL implements UserDao {
 
 
     @Override
-    public List<User> readUser(String userType) {
+    public List<User> readUser() {
         List<User> users = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConntectionToDatabase();
              PreparedStatement stmt = connection.prepareStatement(
@@ -96,8 +116,7 @@ public class UserDaoSQL implements UserDao {
                              " FROM users JOIN usersCredentials ON credentialsId = ucid " +
                              "LEFT JOIN usersDetails ON detailsId = udid " +
                              "JOIN usersTypes ON users.typeId = usersTypes.utid LEFT " +
-                             "JOIN addresses ON users.uid = addresses.userId WHERE userType = ?")) {
-            stmt.setString(1, userType);
+                             "JOIN addresses ON users.uid = addresses.userId")) {
             createUser(stmt, users);
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage()
