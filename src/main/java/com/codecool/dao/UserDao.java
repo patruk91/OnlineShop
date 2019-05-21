@@ -5,8 +5,9 @@ import com.codecool.model.User;
 import java.util.List;
 
 public interface UserDao {
-    void createUser(User user);
-    List<User> readUser(int userId);
+    void createUser(String login, String password);
+    List<User> readUser(String userType);
     void updateUser(User user, String column);
     void deleteUser(User user);
+
 }
