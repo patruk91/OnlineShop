@@ -1,5 +1,7 @@
 package com.codecool.view.viewer.textViewer;
 
+import com.codecool.model.Order;
+import com.codecool.model.OrderDetail;
 import com.codecool.model.Product;
 import com.codecool.view.viewer.View;
 
@@ -65,6 +67,23 @@ public class TextView implements View {
             id++;
         }
         System.out.println(FlipTable.of(headers, list));
+    }
+
+    @Override
+    public void displayOrders(List<Order> orders) {
+        String[] headers = {"ID", "Date", "Status"};
+        String[][] list = new String[orders.size()][];
+        int idInTable = 1;
+        int id = 0;
+
+        for(Order order : orders){
+            String[] singleProduct = {String.valueOf(idInTable), order.getDate().toString(), order.getOrderStatus()};
+            list[id] = singleProduct;
+            idInTable++;
+            id++;
+        }
+        System.out.println(FlipTable.of(headers, list));
+
     }
 
     @Override
