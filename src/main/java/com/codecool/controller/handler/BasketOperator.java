@@ -61,7 +61,6 @@ public class BasketOperator {
         int totalPrice = 0;
         for(OrderDetail orderDetail : basket.getOrderDetails()){
             Product product = orderDetail.getProduct();
-            product.setAmount(orderDetail.getQuantity());
             list.add(product);
             totalPrice += orderDetail.getProduct().getPrice() * orderDetail.getQuantity();
         }
