@@ -23,4 +23,8 @@ public class Basket {
     public void addOrderDetails(OrderDetail orderDetail) {
         orderDetails.add(orderDetail);
     }
+
+    public void setUserId(int userid) {
+        this.userId = userid;
+    }
 }

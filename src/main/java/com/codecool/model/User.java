@@ -1,8 +1,5 @@
 package com.codecool.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class User {
     private int id;
     private String type;

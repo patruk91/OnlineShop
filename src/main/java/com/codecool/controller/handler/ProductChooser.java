@@ -17,12 +17,13 @@ public class ProductChooser {
     private View view;
     private ProductDao productDao;
     private Basket basket;
-    private List<Product> products = new ArrayList<>();
+    private List<Product> products;
 
     public ProductChooser(Reader reader, View view, ProductDao productDao) {
         this.reader = reader;
         this.view = view;
         this.productDao = productDao;
+        products = productDao.readProduct("status", "active", "customer");
     }
 
     public ProductChooser(Reader reader, View view, ProductDao productDao, Basket basket) {
@@ -77,7 +78,7 @@ public class ProductChooser {
         TreeMap<String, Integer> categories = productDao.getCategories();
         displayCategories(categories);
         String category = reader.getCategoryFromUser(categories.keySet());
-        products = productDao.readProduct("categoryName", category);
+        products = productDao.readProduct("categoryName", category, userType);
         displayProducts(userType);
     }
 
@@ -85,7 +86,7 @@ public class ProductChooser {
         view.clearScreen();
         view.displayMessage("Enter product name: ");
         String productName = reader.getNotEmptyString();
-        products = productDao.readProduct("name", productName);
+        products = productDao.readProduct("name", productName, userType);
         displayProducts(userType);
     }
 
