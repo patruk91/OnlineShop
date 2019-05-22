@@ -14,11 +14,6 @@ public class Login {
     private UserDao userDao;
     private User user;
 
-    public User getUser() {
-        return user;
-    }
-
-
     public Login(User user, Reader reader, View viewer, UserDao userDao) {
         this.reader = reader;
         this.viewer = viewer;
@@ -32,6 +27,10 @@ public class Login {
         } else {
             logOutUser(basket);
         }
+    }
+
+    public User getUser() {
+        return user;
     }
 
     private void logOutUser(Basket basket) {
