@@ -50,7 +50,7 @@ public class UserProfile {
     private void editUserData() {
         boolean endEdition = false;
         while(!endEdition) {
-            viewer.displayUserData(user);
+//            viewer.displayUserData(user);
             viewer.displayQuestion("Chose data to edit");
             String option = reader.getNotEmptyString();
             switch (option) {

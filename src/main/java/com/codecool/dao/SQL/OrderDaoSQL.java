@@ -77,7 +77,7 @@ public class OrderDaoSQL implements OrderDao {
         try (Connection connection = DatabaseConnection.getConntectionToDatabase()) {
             try (ResultSet userOrders = getUserOrders(userId, connection)) {
                 while (userOrders.next()) {
-                    int oid = userOrders.getInt("id");
+                    int oid = userOrders.getInt("oid");
                     String orderStatus = userOrders.getString("statusName");
                     Order order = new Order(userId, oid, orderStatus);
 
