@@ -5,10 +5,12 @@ import java.util.Date;
 public class Order extends Basket {
     private Date date;
     private int orderId;
+    private String orderStatus;
 
-    public Order(int userId, int orderId) {
+    public Order(int userId, int orderId, String orderStatus) {
         super(userId);
         this.orderId = orderId;
+        this.orderStatus = orderStatus;
     }
 
     public Date getDate() {
@@ -26,6 +28,10 @@ public class Order extends Basket {
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
+
+    public String getOrderStatus(){ return orderStatus; }
+
+    public void setOrderStatus(String orderStatus){ this.orderStatus = orderStatus; }
 
     @Override
     public String toString() {
