@@ -51,7 +51,7 @@ public class ProductChooser {
                     break;
                 case 4:
                     if (userType.equals("admin")) {
-                        
+                        editProducts();
                         break;
                     } else {
                         addProductToBasket(userType);
@@ -59,6 +59,11 @@ public class ProductChooser {
                     }
             }
         }
+    }
+
+    private void editProducts() {
+        products = productDao.readProduct("status", "all", "admin");
+        
     }
 
     private void displayMenu(String userType) {
