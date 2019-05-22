@@ -9,6 +9,7 @@ import com.codecool.view.viewer.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 public class BasketOperator {
     private Reader reader;
@@ -57,16 +58,27 @@ public class BasketOperator {
     }
 
     private void displayBasket(Basket basket) {
+        TreeMap<String, Integer> temporary = new TreeMap<>();
         List<Product> list = new ArrayList<>();
         int totalPrice = 0;
         for(OrderDetail orderDetail : basket.getOrderDetails()){
             Product product = orderDetail.getProduct();
+            temporary.put(product.getName(), product.getAmount());
             product.setAmount(orderDetail.getQuantity());
             list.add(product);
             totalPrice += orderDetail.getProduct().getPrice() * orderDetail.getQuantity();
         }
         viewer.displayProductsForUser(list);
         viewer.displayMessage("Total order price: " + totalPrice);
+
+        for(OrderDetail orderDetail : basket.getOrderDetails()){
+            Product product = orderDetail.getProduct();
+            for (String key : temporary.keySet()) {
+                if (key.equalsIgnoreCase(product.getName())) {
+                    product.setAmount(temporary.get(key));
+                }
+            }
+        }
     }
 
     private void editQuantity(Basket basket) {
