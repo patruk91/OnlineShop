@@ -1,8 +1,6 @@
 package com.codecool.view.viewer.textViewer;
 
-import com.codecool.model.Order;
-import com.codecool.model.OrderDetail;
-import com.codecool.model.Product;
+import com.codecool.model.*;
 import com.codecool.view.viewer.View;
 
 import java.util.ArrayList;
@@ -83,7 +81,21 @@ public class TextView implements View {
             id++;
         }
         System.out.println(FlipTable.of(headers, list));
+    }
 
+    @Override
+    public void displayUserData(User user) {
+        String[] headers = {"Name", "Last name", "Address"};
+        String[][] list = new String[1][];
+        Address address = user.getAddres();
+        list[0][0] = user.getName();
+        list[0][1] = user.getLastName();
+        list[0][2] = address.getCountry();
+        list[0][3] = address.getCity();
+        list[0][4] = address.getZipCode();
+        list[0][5] = address.getStreet();
+
+        System.out.println(FlipTable.of(headers, list));
     }
 
     @Override
