@@ -36,6 +36,7 @@ public class Login {
     private void logOutUser(Basket basket) {
         user = new User(0, "anonymous", "anonymous");
         basket.setUserId(0);
+        basket.getOrderDetails().clear();
     }
 
     private void loginUser(Basket basket) {
