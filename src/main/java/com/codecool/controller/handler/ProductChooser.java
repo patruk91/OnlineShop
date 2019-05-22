@@ -50,8 +50,13 @@ public class ProductChooser {
                     displayProductsByName(userType);
                     break;
                 case 4:
-                    addProductToBasket(userType);
-                    break;
+                    if (userType.equals("admin")) {
+                        
+                        break;
+                    } else {
+                        addProductToBasket(userType);
+                        break;
+                    }
             }
         }
     }
@@ -59,6 +64,7 @@ public class ProductChooser {
     private void displayMenu(String userType) {
         String unloggedMenu = "1. Back to main menu 2. By category 3. By name";
         String userMenu = "1. Back to main menu 2. By category 3. By name 4. Add product to basket";
+        String adminMenu = "1. Back to main menu 2. By category 3. By name 4. Edit products";
 
         switch (userType) {
             case "anonymous":
@@ -67,11 +73,15 @@ public class ProductChooser {
             case "customer":
                 view.displayMenu(userMenu);
                 break;
+            case "admin":
+                view.displayMenu(adminMenu);
+                break;
             default:
                 view.displayError("No option available");
                 break;
         }
     }
+
 
     private void displayProductsByCategory(String userType) {
         view.clearScreen();
