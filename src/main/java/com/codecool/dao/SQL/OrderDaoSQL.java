@@ -78,7 +78,8 @@ public class OrderDaoSQL implements OrderDao {
             try (ResultSet userOrders = getUserOrders(userId, connection)) {
                 while (userOrders.next()) {
                     int oid = userOrders.getInt("id");
-                    Order order = new Order(userId, oid);
+                    String orderStatus = userOrders.getString("statusName");
+                    Order order = new Order(userId, oid, orderStatus);
 
                     try (ResultSet orderDetails = getOrderDetails(connection, userId, oid)) {
                         while (orderDetails.next()) {
@@ -98,7 +99,7 @@ public class OrderDaoSQL implements OrderDao {
 
     private ResultSet getUserOrders(int userId, Connection connection) throws SQLException {
         try (PreparedStatement stmt = connection.prepareStatement(
-                "SELECT oid FROM orders WHERE userId = ?")) {
+                "SELECT oid, statusName FROM orders WHERE userId = ?")) {
             stmt.setInt(1, userId);
             return stmt.executeQuery();
         }
