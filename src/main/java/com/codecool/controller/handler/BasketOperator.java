@@ -59,7 +59,9 @@ public class BasketOperator {
     private void displayBasket(Basket basket) {
         List<Product> list = new ArrayList<>();
         for(OrderDetail orderDetail : basket.getOrderDetails()){
-            list.add(orderDetail.getProduct());
+            Product product = orderDetail.getProduct();
+            product.setAmount(orderDetail.getQuantity());
+            list.add(product);
         }
         viewer.displayProductsForUser(list);
     }

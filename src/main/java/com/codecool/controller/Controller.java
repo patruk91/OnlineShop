@@ -37,28 +37,6 @@ public class Controller {
     }
 
     public void runner() {
-
-//        User user1 = new User(1, "customer", "paul", "paul213434", "jackson");
-//        User user2 = new User(2, "customer", "emma", "emma2137", "smith");
-//        User user3 = new User(3, "customer", "john", "john587435", "black");
-//        List<User> users = new ArrayList<>();
-//        users.add(user1);
-//        users.add(user2);
-//        users.add(user3);
-
-//        Product product1 = new Product(1,"gra szczelanka", 45, 23.43, true, 2);
-//        Product product2 = new Product(1,"gra ścigałka", 11, 123.3, false, 1);
-//        List<Product> products = new ArrayList<>();
-//        products.add(product1);
-//        products.add(product2);
-//
-//        viewer.displayProductsForUser(products);
-//        System.out.println();
-//        System.out.println();
-//        viewer.displayProductsForAdmin(products);
-
-
-
         boolean exitApp = false;
         while(!exitApp) {
             viewer.clearScreen();
