@@ -57,15 +57,7 @@ public class BasketOperator {
     }
 
     private void displayBasket(Basket basket) {
-        List<Product> list = new ArrayList<>();
-        int totalPrice = 0;
-        for(OrderDetail orderDetail : basket.getOrderDetails()){
-            Product product = orderDetail.getProduct();
-            list.add(product);
-            totalPrice += orderDetail.getProduct().getPrice() * orderDetail.getQuantity();
-        }
-        viewer.displayProductsForUser(list);
-        viewer.displayMessage("Total order price: " + totalPrice);
+        viewer.displayMessage(basket.toString());
     }
 
     private void editQuantity(Basket basket) {
