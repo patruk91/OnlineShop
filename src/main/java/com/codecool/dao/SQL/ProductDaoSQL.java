@@ -35,11 +35,19 @@ public class ProductDaoSQL implements ProductDao {
     }
 
     @Override
-    public List<Product> readProduct(String column, String data) {
+    public List<Product> readProduct(String column, String data, String userType) {
+        String query = "";
+        if (userType.equals("admin")) {
+            query = "SELECT * FROM products JOIN categories ON categoryId = cid WHERE "
+                    + column + " LIKE ?";
+        } else {
+            query = "SELECT * FROM products JOIN categories ON categoryId = cid WHERE "
+                    + column + " LIKE ? AND status = 'active'";
+        }
+
         List<Product> products = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConntectionToDatabase();
-             PreparedStatement stmt = connection.prepareStatement(
-                     "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" LIKE ?")) {
+             PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, "%" + data + "%");
             addProduct(stmt, products);
         } catch (SQLException e) {

@@ -7,7 +7,7 @@ import java.util.TreeMap;
 
 public interface ProductDao {
     void createProduct(Product product);
-    List<Product> readProduct(String name, String type);
+    List<Product> readProduct(String name, String type, String userType);
     void updateProduct(Product product, String column);
     void deleteProduct(Product product);
     TreeMap<String, Integer> getCategories();
