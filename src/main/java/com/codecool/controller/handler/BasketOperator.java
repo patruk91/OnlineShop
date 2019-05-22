@@ -2,8 +2,13 @@ package com.codecool.controller.handler;
 
 import com.codecool.dao.OrderDao;
 import com.codecool.model.Basket;
+import com.codecool.model.OrderDetail;
+import com.codecool.model.Product;
 import com.codecool.view.reader.Reader;
 import com.codecool.view.viewer.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BasketOperator {
     private Reader reader;
@@ -52,7 +57,16 @@ public class BasketOperator {
     }
 
     private void displayBasket(Basket basket) {
-        viewer.displayTable(basket.toString());
+        List<Product> list = new ArrayList<>();
+        int totalPrice = 0;
+        for(OrderDetail orderDetail : basket.getOrderDetails()){
+            Product product = orderDetail.getProduct();
+            product.setAmount(orderDetail.getQuantity());
+            list.add(product);
+            totalPrice += orderDetail.getProduct().getPrice() * orderDetail.getQuantity();
+        }
+        viewer.displayProductsForUser(list);
+        viewer.displayMessage("Total order price: " + totalPrice);
     }
 
     private void editQuantity(Basket basket) {

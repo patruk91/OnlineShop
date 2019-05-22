@@ -11,11 +11,16 @@ import com.codecool.dao.SQL.OrderDaoSQL;
 import com.codecool.dao.SQL.ProductDaoSQL;
 import com.codecool.dao.SQL.UserDaoSQL;
 import com.codecool.model.Basket;
+import com.codecool.model.Product;
 import com.codecool.model.User;
 import com.codecool.view.reader.Reader;
 import com.codecool.view.validator.InputValidator;
 import com.codecool.view.viewer.View;
 import com.codecool.view.viewer.textViewer.TextView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Controller {
 

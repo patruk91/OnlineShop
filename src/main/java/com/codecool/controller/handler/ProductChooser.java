@@ -9,6 +9,7 @@ import com.codecool.view.viewer.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class ProductChooser {
@@ -78,7 +79,7 @@ public class ProductChooser {
         displayCategories(categories);
         String category = reader.getCategoryFromUser(categories.keySet());
         products = productDao.readProduct("categoryName", category, userType);
-        displayProducts();
+        displayProducts(userType);
     }
 
     private void displayProductsByName(String userType) {
@@ -86,7 +87,7 @@ public class ProductChooser {
         view.displayMessage("Enter product name: ");
         String productName = reader.getNotEmptyString();
         products = productDao.readProduct("name", productName, userType);
-        displayProducts();
+        displayProducts(userType);
     }
 
     private void addProductToBasket(String userType) {
@@ -178,25 +179,26 @@ public class ProductChooser {
         throw new IllegalArgumentException("No product by that name!");
     }
 
-
-
-
     private void displayCategories(TreeMap<String, Integer> categories){
-        StringBuilder sb = new StringBuilder();
-        for (String category : categories.keySet()) {
-            sb.append(category);
-            sb.append("\n");
+        String[] headers = {"ID", "Name"};
+        String[][] table = new String[categories.keySet().size()][2];
+        int id1 = 0;
+        int id2 = 0;
+        for (Map.Entry<String, Integer> entry : categories.entrySet()) {
+            table[id1][id2] = Integer.toString(entry.getValue());
+            table[id1][id2 + 1] = entry.getKey();
+            id1++;
         }
-        view.displayTable(sb.toString());
+        view.displayCategories(headers, table);
     }
 
-    private void displayProducts() {
-        StringBuilder sb = new StringBuilder();
-        for (Product product : products) {
-            sb.append(product.toString());
-            sb.append("\n");
+    private void displayProducts(String userType) {
+        if(userType == "admin"){
+            view.displayProductsForAdmin(products);
+        }else{
+            view.displayProductsForUser(products);
         }
-        view.clearScreen();
-        view.displayTable(sb.toString());
+
     }
 }
+
