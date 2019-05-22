@@ -50,7 +50,7 @@ public class UserProfile {
     private void editUserData() {
         boolean endEdition = false;
         while(!endEdition) {
-//            viewer.displayUserData(user);
+            viewer.displayUserData(user);
             viewer.displayQuestion("Chose data to edit");
             String option = reader.getNotEmptyString();
             switch (option) {
@@ -80,6 +80,7 @@ public class UserProfile {
                     break;
                 default:
                     viewer.displayError("Incorrect option");
+                    break;
             }
             viewer.displayQuestion("Edit more data");
             String editMore = reader.getNotEmptyString();
@@ -90,6 +91,8 @@ public class UserProfile {
                     commitChanges();
                     endEdition = true;
                     break;
+                default :
+                    viewer.displayError("Incorrect option [yes/no]");
             }
 
         }
@@ -101,6 +104,6 @@ public class UserProfile {
     }
 
     private void commitChanges() {
-
+        userDao.updateUser(user);
     }
 }

@@ -83,6 +83,7 @@ public class Controller {
                     UserProfile userProfile = new UserProfile(user, reader, viewer, userDao, orderDao);
                     userProfile.controller();
                     this.user = userProfile.getUser();
+                    break;
                 default:
                     viewer.displayError("Please, provide correct data");
             }
