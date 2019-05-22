@@ -1,9 +1,6 @@
 package com.codecool.controller;
 
-import com.codecool.controller.handler.BasketOperator;
-import com.codecool.controller.handler.Login;
-import com.codecool.controller.handler.ProductChooser;
-import com.codecool.controller.handler.Register;
+import com.codecool.controller.handler.*;
 import com.codecool.dao.UserDao;
 import com.codecool.dao.OrderDao;
 import com.codecool.dao.ProductDao;
@@ -44,11 +41,11 @@ public class Controller {
         boolean exitApp = false;
         while(!exitApp) {
             viewer.clearScreen();
-            viewer.displayMessage("logged as: " + user.getLogin());
+            viewer.displayMessage("User: " + user.getLogin());
             if(user.getId() == 0) {
                 viewer.displayMenu("e. Exit, s. Show products, li. Login, r. Register");
             } else {
-                viewer.displayMenu("e. Exit, s. Place order, lo. Log out, b. Basket");
+                viewer.displayMenu("e. Exit, s. Place order, lo. Log out, b. Basket, p. Profile");
             }
 
             viewer.displayQuestion("Choose menu option");
@@ -82,6 +79,10 @@ public class Controller {
                     Register register = new Register(viewer, reader, userDao);
                     register.controller();
                     break;
+                case "p":
+                    UserProfile userProfile = new UserProfile(user, reader, viewer, userDao);
+                    userProfile.controller();
+                    this.user = userProfile.getUser();
                 default:
                     viewer.displayError("Please, provide correct data");
             }
