@@ -160,8 +160,46 @@ public class UserDaoSQL implements UserDao {
     }
 
     @Override
-    public void updateUser(User user, String column) {
+    public void updateUser(User user) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement updateDetails = connection.prepareStatement(
+                     "UPDATE usersDetails SET name = ?, lastName = ? WHERE credentialsId = ?");
+             PreparedStatement updateAddress = connection.prepareStatement(
+                     "UPDATE addresses SET street = ?, country = ?, zipCode = ?, city = ? WHERE userId = ?");
+             PreparedStatement getDetailsId = connection.prepareStatement(
+                     "SELECT detailsId FROM users WHERE uid = ?")
+             ){
+            UpdateUserDetails(user, updateDetails, getDetailsId);
+            UpdateUserAddress(user, updateAddress);
 
+
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+    }
+
+    private void UpdateUserDetails(User user, PreparedStatement updateDetails, PreparedStatement getDetailsId) throws SQLException {
+        getDetailsId.setInt(1, user.getId());
+        try (ResultSet resultSet = getDetailsId.executeQuery()) {
+            int credentialsId = -1;
+            while (resultSet.next()) {
+                credentialsId = resultSet.getInt("credentialsId");
+            }
+            updateDetails.setString(1, user.getName());
+            updateDetails.setString(2, user.getLastName());
+            updateDetails.setInt(3, credentialsId);
+            updateDetails.executeUpdate();
+        }
+    }
+
+    private void UpdateUserAddress(User user, PreparedStatement updateAddress) throws SQLException {
+        updateAddress.setString(1, user.getAddres().getStreet());
+        updateAddress.setString(2, user.getAddres().getCountry());
+        updateAddress.setString(3, user.getAddres().getZipCode());
+        updateAddress.setString(4, user.getAddres().getCity());
+        updateAddress.executeUpdate();
     }
 
     @Override

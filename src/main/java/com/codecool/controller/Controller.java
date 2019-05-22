@@ -80,7 +80,7 @@ public class Controller {
                     register.controller();
                     break;
                 case "p":
-                    UserProfile userProfile = new UserProfile(user, reader, viewer, userDao);
+                    UserProfile userProfile = new UserProfile(user, reader, viewer, userDao, orderDao);
                     userProfile.controller();
                     this.user = userProfile.getUser();
                 default:
