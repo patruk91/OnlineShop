@@ -1,7 +1,5 @@
 package com.codecool.model;
 
-import java.util.Objects;
-
 public class Product {
     private int productId;
     private String name;
