@@ -17,20 +17,23 @@ public class UserDaoSQL implements UserDao {
     public void createUser(String login, String password) {
         if (!isUserInDatabase(login)) {
             try (Connection connection = DatabaseConnection.getConntectionToDatabase();
-                 PreparedStatement insertUser = connection.prepareStatement(
+                 PreparedStatement insertUserCredentials = connection.prepareStatement(
                          "INSERT INTO usersCredentials(userLogin, userPassword) VALUES(?, ?)");
                  PreparedStatement insertDetails = connection.prepareStatement(
-                         "INSERT INTO usersDetails(name, lastName) VALUES(NULL, NULL)");
+                         "INSERT INTO usersDetails(name, lastName) VALUES('-', '-')");
                  PreparedStatement insertUserBase = connection.prepareStatement(
-                         "INSERT INTO users(typeId, credentialsId, detailsId) VALUES(2, ?, ?)")){
-                insertUserData(insertUser, login, password);
+                         "INSERT INTO users(typeId, credentialsId, detailsId) VALUES(2, ?, ?)");
+                 PreparedStatement getNewUserId = connection.prepareStatement(
+                         "SELECT uid FROM users ORDER BY uid DESC LIMIT 1");
+                 PreparedStatement insertEmptyAddress = connection.prepareStatement(
+                         "INSERT INTO addresses(street, country, zipCode, city, userId) VALUES('-', '-', '-', '-', ?)")){
+                insertUserData(insertUserCredentials, login, password);
                 insertDetails.executeUpdate();
+                insertUser(connection, insertUserBase);
+                int newUserId = selectNewUserId(getNewUserId);
+                insertAddress(insertEmptyAddress, newUserId);
 
-                insertUserBase.setInt(1, getLastCredentialsId(connection));
-                insertUserBase.setInt(2, getLastDetailsId(connection));
-                insertUserBase.executeUpdate();
 
-                
             } catch (SQLException e) {
                 System.out.println("SQLException: " + e.getMessage()
                         + "\nSQLState: " + e.getSQLState()
@@ -38,6 +41,27 @@ public class UserDaoSQL implements UserDao {
             }
         }
 
+    }
+
+    private void insertAddress(PreparedStatement insertEmptyAddress, int newUserId) throws SQLException {
+        insertEmptyAddress.setInt(1, newUserId);
+        insertEmptyAddress.executeUpdate();
+    }
+
+    private int selectNewUserId(PreparedStatement getNewUserId) throws SQLException {
+        int newUserId = -1;
+        try(ResultSet rs = getNewUserId.executeQuery()) {
+            while(rs.next()){
+                newUserId = rs.getInt("uid");
+            }
+        }
+        return newUserId;
+    }
+
+    private void insertUser(Connection connection, PreparedStatement insertUserBase) throws SQLException {
+        insertUserBase.setInt(1, getLastCredentialsId(connection));
+        insertUserBase.setInt(2, getLastDetailsId(connection));
+        insertUserBase.executeUpdate();
     }
 
     private int getLastCredentialsId(Connection connection) throws SQLException {
@@ -160,8 +184,52 @@ public class UserDaoSQL implements UserDao {
     }
 
     @Override
-    public void updateUser(User user, String column) {
+    public void updateUser(User user) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement getUserDetailsId = connection.prepareStatement(
+                     "SELECT detailsId FROM users WHERE uid = ?");
+             PreparedStatement updateDetails = connection.prepareStatement(
+                     "UPDATE usersDetails SET name = ?, lastName = ? WHERE udid = ?");
+             PreparedStatement updateAddress = connection.prepareStatement(
+                     "UPDATE addresses SET street = ?, country = ?, zipCode = ?, city = ? WHERE userId = ?");
+             ){
+            int userDetailsId = selectUserDetailsId(getUserDetailsId, user);
+            UpdateUserDetails(user, updateDetails, userDetailsId);
+            UpdateUserAddress(user, updateAddress);
 
+
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+    }
+
+    private int selectUserDetailsId(PreparedStatement getUserDetailsId, User user) throws SQLException {
+        getUserDetailsId.setInt(1, user.getId());
+        int detailsId = -1;
+        try(ResultSet rs = getUserDetailsId.executeQuery()) {
+            while(rs.next()) {
+                detailsId = rs.getInt("detailsId");
+            }
+        }
+        return detailsId;
+    }
+
+    private void UpdateUserDetails(User user, PreparedStatement updateDetails, int userDetailsId) throws SQLException {
+        updateDetails.setString(1, user.getName());
+        updateDetails.setString(2, user.getLastName());
+        updateDetails.setInt(3, userDetailsId);
+        updateDetails.executeUpdate();
+    }
+
+    private void UpdateUserAddress(User user, PreparedStatement updateAddress) throws SQLException {
+        updateAddress.setString(1, user.getAddres().getStreet());
+        updateAddress.setString(2, user.getAddres().getCountry());
+        updateAddress.setString(3, user.getAddres().getZipCode());
+        updateAddress.setString(4, user.getAddres().getCity());
+        updateAddress.setInt(5, user.getId());
+        updateAddress.executeUpdate();
     }
 
     @Override

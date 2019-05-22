@@ -74,48 +74,41 @@ public class OrderDaoSQL implements OrderDao {
     public List<Order> readOrder(int userId) {
         List<Order> userOrdersList = new ArrayList<>();
 
-        try (Connection connection = DatabaseConnection.getConntectionToDatabase()) {
-            try (ResultSet userOrders = getUserOrders(userId, connection)) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                "SELECT * FROM orders WHERE userId = ?")) {
+            stmt.setInt(1, userId);
+            System.out.println();
+            try (ResultSet userOrders = stmt.executeQuery()) {
                 while (userOrders.next()) {
-                    int oid = userOrders.getInt("id");
+                    int oid = userOrders.getInt("oid");
                     String orderStatus = userOrders.getString("statusName");
                     Order order = new Order(userId, oid, orderStatus);
+                    userOrdersList.add(order);
 
-                    try (ResultSet orderDetails = getOrderDetails(connection, userId, oid)) {
-                        while (orderDetails.next()) {
-                            addOrderDetails(orderDetails, order);
+                    try (PreparedStatement stmt1 = connection.prepareStatement(
+                            "SELECT orders.oid, orders.date, products.pid, products.name, products.quantity, products.price, " +
+                                    "products.status, products.categoryId, ordersDetails.productQuantity FROM orders " +
+                                    "JOIN ordersDetails ON orders.oid = ordersDetails.orderId JOIN products ON " +
+                                    "ordersDetails.productId = products.pid WHERE userId = ? AND oid = ?")) {
+                        stmt1.setInt(1, userId);
+                        stmt1.setInt(2, oid);
+
+                        try (ResultSet orderDetails = stmt1.executeQuery()) {
+                            while (orderDetails.next()) {
+                                addOrderDetails(orderDetails, order);
+                            }
                         }
-                        userOrdersList.add(order);
                     }
+
                 }
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage()
-                    + "\nSQLState: " + e.getSQLState()
-                    + "\nVendorError: " + e.getErrorCode());
+            e.printStackTrace();
         }
         return userOrdersList;
     }
 
-    private ResultSet getUserOrders(int userId, Connection connection) throws SQLException {
-        try (PreparedStatement stmt = connection.prepareStatement(
-                "SELECT oid, statusName FROM orders WHERE userId = ?")) {
-            stmt.setInt(1, userId);
-            return stmt.executeQuery();
-        }
-    }
-
-    private ResultSet getOrderDetails(Connection connection, int userId, int oid) throws SQLException {
-        try (PreparedStatement stmt = connection.prepareStatement(
-                "SELECT orders.oid, orders.date, products.pid, products.name, products.quantity, products.price, " +
-                        "products.status, products.categoryId, ordersDetails.productQuantity, FROM orders " +
-                        "JOIN ordersDetails ON orders.oid = ordersDetails.orderId JOIN products ON " +
-                        "ordersDetails.productId = products.pid WHERE userId = ? AND oid = ?")) {
-            stmt.setInt(1, userId);
-            stmt.setInt(2, oid);
-            return stmt.executeQuery();
-        }
-    }
 
     private void addOrderDetails(ResultSet rs, Order order) throws SQLException {
         int pid = rs.getInt("pid");
@@ -126,8 +119,9 @@ public class OrderDaoSQL implements OrderDao {
         int category = rs.getInt("categoryId");
 
         int orderQuantity = rs.getInt("productQuantity");
-        Date date = rs.getDate("date");
-        order.setDate(date);
+        Long date = rs.getLong("date");
+
+        order.setDate(new java.util.Date(date));
 
         Product product = new Product(pid, name, amount, price, status, category);
         OrderDetail orderDetail = new OrderDetail(product, orderQuantity);

@@ -10,7 +10,7 @@ public interface UserDao {
     List<User> readUser();
     boolean isUserInDatabase(String login);
     boolean isPasswordCorrect(String login, String password) throws SQLException;
-    void updateUser(User user, String column);
+    void updateUser(User user);
     void deleteUser(User user);
 
 }
