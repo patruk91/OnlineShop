@@ -12,41 +12,47 @@ public class Login {
     private Reader reader;
     private View viewer;
     private UserDao userDao;
+    private User user;
 
-    public Login(Reader reader, View viewer, UserDao userDao) {
+    public User getUser() {
+        return user;
+    }
+
+
+    public Login(User user, Reader reader, View viewer, UserDao userDao) {
         this.reader = reader;
         this.viewer = viewer;
         this.userDao = userDao;
+        this.user = user;
     }
 
-    public void controller(User user, Basket basket) {
+    public void controller(Basket basket) {
         if(user.getType().equals("anonymous")) {
-            loginUser(user, basket);
+            loginUser(basket);
         } else {
-            logOutUser(user, basket);
+            logOutUser(basket);
         }
     }
 
-    private void logOutUser(User user, Basket basket) {
-        user.setId(0);
-        user.setType("anonymous");
+    private void logOutUser(Basket basket) {
+        user = new User(0, "anonymous", "anonymous");
         basket.setUserId(0);
     }
 
-    private void loginUser(User user, Basket basket) {
+    private void loginUser(Basket basket) {
         String login = getLoginFromUser();
         String userPassword = getPasswordFromUser();
         if (userDao.isUserInDatabase(login)) {
-            checkIfPasswordIsCorrect(user, basket, login, userPassword);
+            checkIfPasswordIsCorrect(basket, login, userPassword);
         } else {
             viewer.displayError("No user by that login");
         }
     }
 
-    private void checkIfPasswordIsCorrect(User user, Basket basket, String login, String userPassword) {
+    private void checkIfPasswordIsCorrect(Basket basket, String login, String userPassword) {
         try {
             if (userDao.isPasswordCorrect(login, userPassword)) {
-                loginUserWithCorrectData(user, basket, login);
+                loginUserWithCorrectData(basket, login);
             } else {
                 viewer.displayError("Incorrect password");
             }
@@ -57,17 +63,15 @@ public class Login {
         }
     }
 
-    private void loginUserWithCorrectData(User user, Basket basket, String login) {
-        int userId = getUserId(login);
-        user.setId(userId);
-        user.setType(getUserType(login));
-        basket.setUserId(userId);
+    private void loginUserWithCorrectData(Basket basket, String login) {
+        user = getUser(login);
+        basket.setUserId(user.getId());
     }
 
-    private int getUserId(String login) {
+    private User getUser(String login) {
         for(User user: userDao.readUser()) {
             if(user.getLogin().equals(login)) {
-                return user.getId();
+                return user;
             }
         }
         throw new IllegalArgumentException("No user by that login.");

@@ -27,17 +27,20 @@ public class Controller {
     private Reader reader = new Reader(viewer, inputValidator);
     private User user;
     private Basket basket;
+    private Login login;
 
     public Controller() {
-        user = new User(0, "anonymous");
+        user = new User(0, "anonymous", "anonymous");
         basket = new Basket(0);
+        login = new Login(user, reader, viewer, userDao);
+
     }
 
     public void runner() {
         boolean exitApp = false;
         while(!exitApp) {
             viewer.clearScreen();
-
+            viewer.displayMessage("logged as: " + user.getLogin());
             if(user.getId() == 0) {
                 viewer.displayMenu("e. Exit, s. Show products, li. Login, r. Register");
             } else {
@@ -67,8 +70,8 @@ public class Controller {
                     break;
                 case "li":
                 case "lo":
-                    Login login = new Login(reader, viewer, userDao);
-                    login.controller(user, basket);
+                    login.controller(basket);
+                    this.user = login.getUser();
                     break;
                 case "r":
                     Register register = new Register(viewer, reader, userDao);
