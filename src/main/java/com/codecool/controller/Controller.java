@@ -27,12 +27,11 @@ public class Controller {
     private Reader reader = new Reader(viewer, inputValidator);
     private User user;
     private Basket basket;
-    private Login login;
 
     public Controller() {
         user = new User(0, "anonymous", "anonymous");
         basket = new Basket(0);
-        login = new Login(user, reader, viewer, userDao);
+
 
     }
 
@@ -70,6 +69,7 @@ public class Controller {
                     break;
                 case "li":
                 case "lo":
+                    Login login = new Login(user, reader, viewer, userDao);
                     login.controller(basket);
                     this.user = login.getUser();
                     break;
