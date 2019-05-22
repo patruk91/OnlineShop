@@ -23,24 +23,4 @@ public class Basket {
     public void addOrderDetails(OrderDetail orderDetail) {
         orderDetails.add(orderDetail);
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        if(orderDetails.size() > 0) {
-            double total = 0.0;
-            for (int i = 0; i < orderDetails.size(); i++) {
-                OrderDetail orderDetail = orderDetails.get(i);
-                sb.append(String.format("%d. Name: %s Quantity: %d Price: %f\n", i + 1, orderDetail.getProduct().getName(),
-                        orderDetail.getQuantity(), orderDetail.getProduct().getPrice() * orderDetail.getQuantity()));
-                total += orderDetail.getProduct().getPrice() * orderDetail.getQuantity();
-            }
-            sb.append("\n");
-            sb.append(total);
-        } else {
-            sb.append("Basket is empty.");
-        }
-        return sb.toString();
-    }
 }
