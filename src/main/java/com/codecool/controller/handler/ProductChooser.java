@@ -57,13 +57,72 @@ public class ProductChooser {
                         addProductToBasket(userType);
                         break;
                     }
+                default:
+                    view.displayMessage("No option available!");
             }
         }
     }
 
     private void editProducts() {
         products = productDao.readProduct("status", "all", "admin");
-        
+        displayEditMenu();
+    }
+
+    private void displayEditMenu() {
+        String editMenu = "1.Add product 2. Edit product 3.Remove product";
+        view.displayMenu(editMenu);
+        final int START = 1;
+        final int END = 3;
+
+
+        view.displayQuestion("Choose menu option");
+        int option = reader.getNumberInRange(START, END);
+        switch (option) {
+            case 1:
+                addProduct();
+                break;
+            case 2:
+
+                break;
+            case 3:
+
+                break;
+            default:
+                view.displayMessage("No option available!");
+
+        }
+    }
+
+    private void addProduct() {
+        view.displayMessage("Enter product name: ");
+        String productName = reader.getNotEmptyString();
+        view.displayMessage("Enter quantity: ");
+        int quantity = reader.getNumberInRange(0, Integer.MAX_VALUE);
+        view.displayMessage("Enter price: ");
+        double price = reader.getNumberInRange(0, Double.MAX_VALUE);
+        view.displayMessage("Order status: ");
+        boolean orderStatus = reader.getNotEmptyString().equalsIgnoreCase("active") ;
+
+        view.displayMessage("Category: ");
+        String category = reader.getNotEmptyString();
+
+        int categoryId = findCategoryId(category);
+
+        Product product = new Product(productName, quantity, price, orderStatus, categoryId);
+        productDao.createProduct(product);
+
+
+    }
+
+    private int findCategoryId(String category) {
+        int number = 0;
+        TreeMap<String, Integer> categories = productDao.getCategories();
+        for (String productCategory : categories.keySet()) {
+            if (productCategory.equalsIgnoreCase(category)) {
+                return categories.get(category);
+            }
+        }
+        return number;
     }
 
     private void displayMenu(String userType) {
