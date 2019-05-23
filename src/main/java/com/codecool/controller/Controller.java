@@ -68,8 +68,12 @@ public class Controller {
                     productChooser.productController(user.getType());
                     break;
                 case "b":
-                    BasketOperator basketOperator = new BasketOperator(reader, viewer, orderDao);
-                    basketOperator.controller(basket);
+                    if(user.getType().equals("customer")) {
+                        BasketOperator basketOperator = new BasketOperator(reader, viewer, orderDao);
+                        basketOperator.controller(basket);
+                    } else {
+                        viewer.displayError("Please, provide correct data");
+                    }
                     break;
                 case "li":
                 case "lo":
@@ -78,17 +82,29 @@ public class Controller {
                     this.user = login.getUser();
                     break;
                 case "r":
-                    Register register = new Register(viewer, reader, userDao);
-                    register.controller();
+                    if (user.getType().equals("anonymous")) {
+                        Register register = new Register(viewer, reader, userDao);
+                        register.controller();
+                    } else {
+                        viewer.displayError("Please, provide correct data");
+                    }
                     break;
                 case "p":
-                    UserProfile userProfile = new UserProfile(user, reader, viewer, userDao, orderDao);
-                    userProfile.controller();
-                    this.user = userProfile.getUser();
+                    if(user.getType().equals("customer")) {
+                        UserProfile userProfile = new UserProfile(user, reader, viewer, userDao, orderDao);
+                        userProfile.controller();
+                        this.user = userProfile.getUser();
+                    } else {
+                        viewer.displayError("Please, provide correct data");
+                    }
                     break;
                 case "t":
-                    AdminTools adminTools = new AdminTools(viewer, reader, productDao, orderDao);
-                    adminTools.adminController();
+                    if (user.getType().equals("admin")) {
+                        AdminTools adminTools = new AdminTools(viewer, reader, productDao, orderDao);
+                        adminTools.adminController();
+                    } else {
+                        viewer.displayError("Please, provide correct data");
+                    }
                     break;
                 default:
                     viewer.displayError("Please, provide correct data");
