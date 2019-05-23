@@ -20,7 +20,6 @@ public class Product {
     public Product(int productId, String name, int amount, double price, boolean status, int categoryId) {
         this(name, amount, price, status, categoryId);
         this.productId = productId;
-
     }
 
     public Product(int id, String name, double price, int amount){

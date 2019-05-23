@@ -128,9 +128,6 @@ public class UserDaoSQL implements UserDao {
         stmt.executeUpdate();
     }
 
-
-
-
     @Override
     public List<User> readUser() {
         List<User> users = new ArrayList<>();
