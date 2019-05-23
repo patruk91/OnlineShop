@@ -86,6 +86,10 @@ public class Controller {
                     userProfile.controller();
                     this.user = userProfile.getUser();
                     break;
+                case "t":
+                    AdminTools adminTools = new AdminTools(viewer, reader, orderDao);
+                    adminTools.adminController();
+                    break;
                 default:
                     viewer.displayError("Please, provide correct data");
             }
