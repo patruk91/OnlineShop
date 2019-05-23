@@ -5,6 +5,8 @@ import com.codecool.view.viewer.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class TextView implements View {
     @Override
@@ -108,5 +110,19 @@ public class TextView implements View {
 //        list[0][5] = address.getStreet();
 //
 //        System.out.println(FlipTable.of(headers, list));
+    }
+
+    @Override
+    public void displayCategories(TreeMap<String, Integer> categories){
+        String[] headers = {"ID", "Name"};
+        String[][] table = new String[categories.keySet().size()][2];
+        int id1 = 0;
+        int id2 = 0;
+        for (Map.Entry<String, Integer> entry : categories.entrySet()) {
+            table[id1][id2] = Integer.toString(entry.getValue());
+            table[id1][id2 + 1] = entry.getKey();
+            id1++;
+        }
+        displayCategories(headers, table);
     }
 }
