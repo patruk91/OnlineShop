@@ -52,6 +52,8 @@ public class UserProfile {
     private void editUserData() {
         boolean endEdition = false;
         while(!endEdition) {
+            boolean isDataCorrect = true;
+
             viewer.clearScreen();
             viewer.displayUserData(user);
             viewer.displayQuestion("Chose data to edit [name, last name, street, country, city, zip code]");
@@ -74,24 +76,29 @@ public class UserProfile {
                     break;
                 case "zip code":
                     editZipCode();
+
                     break;
                 default:
                     viewer.displayError("Incorrect option");
+                    isDataCorrect = false;
+                    reader.promptEnterKey();
                     break;
             }
-            viewer.displayQuestion("Edit more data");
-            String editMore = reader.getNotEmptyString();
-            switch (editMore) {
-                case "yes":
-                    break;
-                case "no":
-                    commitChanges();
-                    endEdition = true;
-                    break;
-                default :
-                    viewer.displayError("Incorrect option [yes/no]");
+            if(isDataCorrect) {
+                viewer.displayQuestion("Edit more data");
+                String editMore = reader.getNotEmptyString();
+                switch (editMore) {
+                    case "yes":
+                        break;
+                    case "no":
+                        commitChanges();
+                        endEdition = true;
+                        break;
+                    default:
+                        viewer.displayError("Incorrect option [yes/no]");
+                }
             }
-
+            isDataCorrect = true;
         }
     }
 
