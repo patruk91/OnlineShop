@@ -139,6 +139,19 @@ public class ProductDaoSQL implements ProductDao {
         return categories;
     }
 
+    @Override
+    public void createCategory(String category) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                     "INSERT INTO categories(categoryName) VALUES(?)")){
+            stmt.setString(1, category);
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+    }
+
     private void addCategory(PreparedStatement stmt, TreeMap<String, Integer> categories) throws SQLException {
         try (ResultSet resultSet = stmt.executeQuery()) {
             while (resultSet.next()) {
