@@ -67,6 +67,7 @@ public class AdminTools {
             orderDao.updateOder(order);
         } else {
             view.displayMessage("No orders to display");
+            reader.promptEnterKey();
         }
 
     }
@@ -76,6 +77,7 @@ public class AdminTools {
         final int START = 1;
         final int END = 4;
         while (!backToAdminMenu) {
+            view.clearScreen();
             view.displayMenu("1. Back to main menu 2. Add category 3. Edit category 4. Remove category\n");
             view.displayQuestion("Choose menu option");
             int option = reader.getNumberInRange(START, END);
@@ -101,12 +103,14 @@ public class AdminTools {
 
     private void removeCategory() {
         String categoryToRemove = getCategoryName();
+
         List<Product> products = productDao.readProduct("admin");
 
-        if (!isCategoryUsed(categoryToRemove, products)) {
+        if (isCategoryExist(categoryToRemove) && !isCategoryUsed(categoryToRemove, products)) {
             productDao.deleteCategory(categories.get(categoryToRemove));
         } else {
-            view.displayError("Category in use");
+            view.displayError("Category in use on no category by that name");
+            reader.promptEnterKey();
         }
     }
 
@@ -128,6 +132,7 @@ public class AdminTools {
             productDao.updateCategory(newCategoryName, categories.get(categoryToEdit));
         } else {
             view.displayError("Category not exist");
+            reader.promptEnterKey();
         }
 
     }
@@ -156,6 +161,7 @@ public class AdminTools {
             productDao.createCategory(category);
         } else {
             view.displayError("Category already exists!");
+            reader.promptEnterKey();
         }
     }
 }
