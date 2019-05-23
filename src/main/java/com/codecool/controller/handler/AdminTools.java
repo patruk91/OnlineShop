@@ -35,6 +35,7 @@ public class AdminTools {
         
         boolean backToMenu = false;
         while (!backToMenu) {
+            view.clearScreen();
             view.displayMenu("1. Back to main menu 2. Manage categories 3. Manage orders\n");
             view.displayQuestion("Choose menu option");
             int option = reader.getNumberInRange(START, END);
@@ -58,15 +59,16 @@ public class AdminTools {
         List<Order> listOfOrders = orderDao.readOrder();
         if(listOfOrders.size() != 0) {
             view.displayOrders(listOfOrders);
+            view.displayQuestion("Enter order id to change status");
+            int orderId = reader.getNumberInRange(1, listOfOrders.size());
+            Order order = listOfOrders.get(orderId - 1);
+            view.displayQuestion("Enter new order status");
+            order.setOrderStatus(reader.getNotEmptyString());
+            orderDao.updateOder(order);
         } else {
             view.displayMessage("No orders to display");
         }
-        view.displayQuestion("Enter order id to change status");
-        int orderId = reader.getNumberInRange(1, listOfOrders.size());
-        Order order = listOfOrders.get(orderId - 1);
-        view.displayQuestion("Enter new order status");
-        order.setOrderStatus(reader.getNotEmptyString());
-        orderDao.updateOder(order);
+
     }
 
     private void manageCategories() {
