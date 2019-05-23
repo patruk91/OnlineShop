@@ -17,13 +17,13 @@ public class ProductChooser {
     private ProductDao productDao;
     private Basket basket;
     private List<Product> products;
-    private Product productToEdit;
 
     public ProductChooser(Reader reader, View view, ProductDao productDao) {
         this.reader = reader;
         this.view = view;
         this.productDao = productDao;
         products = productDao.readProduct("status", "active", "customer");
+
     }
 
     public ProductChooser(Reader reader, View view, ProductDao productDao, Basket basket) {
@@ -85,11 +85,23 @@ public class ProductChooser {
                 editProduct();
                 break;
             case 3:
-
+                removeProduct();
                 break;
             default:
                 view.displayMessage("No option available!");
         }
+    }
+
+    private void removeProduct() {
+        products = productDao.readProduct("admin");
+        view.displayQuestion("Choose product to remove");
+        String product = reader.getNotEmptyString();
+        if (isProductOnList(product)) {
+            productDao.deleteProduct(getProductByName(product));
+        } else {
+            view.displayError("No product by that name in database!");
+        }
+
     }
 
     private void addProduct() {
@@ -215,7 +227,7 @@ public class ProductChooser {
         while (!isProductNameCorrect && products.size() != 1) {
             view.displayMessage("Specify product!");
             specificProductName = getProductName();
-            if (productOnList(specificProductName)) {
+            if (isProductOnList(specificProductName)) {
                 isProductNameCorrect = true;
             }
         }
@@ -271,7 +283,7 @@ public class ProductChooser {
     }
 
     private void ifProductOnList(String productNameInBasket) {
-        if (productOnList(productNameInBasket)) {
+        if (isProductOnList(productNameInBasket)) {
             int quantity = getQuantity(productNameInBasket);
             ifProductInBasket(productNameInBasket, quantity);
             view.clearScreen();
@@ -333,7 +345,7 @@ public class ProductChooser {
         }
     }
 
-    private boolean productOnList(String name) {
+    private boolean isProductOnList(String name) {
         for (Product product : products) {
             if (name.toLowerCase().equals(product.getName().toLowerCase())) {
                 return true;

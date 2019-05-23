@@ -58,6 +58,22 @@ public class ProductDaoSQL implements ProductDao {
         return products;
     }
 
+    @Override
+    public List<Product> readProduct(String userType) {
+        String query = "SELECT * FROM products JOIN categories ON categoryId = cid";
+
+        List<Product> products = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            addProduct(stmt, products);
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+        return products;
+    }
+
     private void addProduct(PreparedStatement stmt, List<Product> products) throws SQLException {
         try (ResultSet resultSet = stmt.executeQuery()) {
             while (resultSet.next()) {
@@ -78,7 +94,7 @@ public class ProductDaoSQL implements ProductDao {
     public void updateProduct(Product product) {
         try (Connection connection = DatabaseConnection.getConntectionToDatabase();
              PreparedStatement stmt = connection.prepareStatement(
-                "UPDATE products SET name = ?, quantity = ?, price = ?, status = ?, categoryId = ? WHERE pid = ?")) {
+                "UPDATE products SET name = ?, quantity = ?, price = ?, categoryId = ? WHERE pid = ?")) {
             updateData(product, stmt);
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage()
@@ -91,9 +107,8 @@ public class ProductDaoSQL implements ProductDao {
         stmt.setString(1, product.getName());
         stmt.setInt(2, product.getAmount());
         stmt.setDouble(3, product.getPrice());
-        stmt.setString(4, product.isStatus() ? "active" : "deactivate");
-        stmt.setInt(5, product.getCategoryId());
-        stmt.setInt(6, product.getProductId());
+        stmt.setInt(4, product.getCategoryId());
+        stmt.setInt(5, product.getProductId());
         stmt.executeUpdate();
     }
 
@@ -103,6 +118,7 @@ public class ProductDaoSQL implements ProductDao {
              PreparedStatement removeOrder = connection.prepareStatement(
                      "DELETE FROM products WHERE pid = ?")) {
             removeOrder.setInt(1, product.getProductId());
+            removeOrder.executeUpdate();
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage()
                     + "\nSQLState: " + e.getSQLState()
