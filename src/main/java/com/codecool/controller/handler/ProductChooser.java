@@ -64,7 +64,7 @@ public class ProductChooser {
     }
 
     private void editProducts() {
-        products = productDao.readProduct("status", "all", "admin");
+        products = productDao.readProduct("admin");
         displayEditMenu();
     }
 
