@@ -7,6 +7,7 @@ import com.codecool.model.Product;
 import com.codecool.view.reader.Reader;
 import com.codecool.view.viewer.View;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -115,7 +116,7 @@ public class ProductChooser {
 
     private int getCategoryId() {
         view.displayMessage("Category: ");
-        String category = reader.getNotEmptyString();
+        String category = reader.getNotEmptyString().toUpperCase();
         return findCategoryId(category);
     }
 
@@ -154,7 +155,6 @@ public class ProductChooser {
         displayProductsByName("admin");
         boolean endEdition = false;
         while(!endEdition) {
-
             Product productToEdit = getProductToEdit();
             view.displayQuestion("Chose data to edit [name, price, amount, status, categoryId]");
             String option = reader.getNotEmptyString();
@@ -226,12 +226,17 @@ public class ProductChooser {
         while (!isProductNameCorrect && products.size() != 1) {
             view.displayMessage("Specify product!");
             specificProductName = getProductName();
+            products = productDao.readProduct("name", specificProductName, "admin");
             if (isProductOnList(specificProductName)) {
                 isProductNameCorrect = true;
+                displayProducts("admin");
             }
         }
-        int firstProduct = 0;
-        specificProductName = products.get(firstProduct).getName();
+
+        if (products.size() == 1) {
+            int firstProduct = 0;
+            specificProductName = products.get(firstProduct).getName();
+        }
 
         return getProductByName(specificProductName);
     }
@@ -271,7 +276,9 @@ public class ProductChooser {
         view.clearScreen();
         String productName = getProductName();
         products = productDao.readProduct("name", productName, userType);
-        displayProducts(userType);
+        if (isProductOnList(productName)) {
+            displayProducts(userType);
+        }
     }
 
     private void addProductToBasket(String userType) {
