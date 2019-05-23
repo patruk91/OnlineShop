@@ -87,7 +87,7 @@ public class Controller {
                     this.user = userProfile.getUser();
                     break;
                 case "t":
-                    AdminTools adminTools = new AdminTools(viewer, reader, orderDao);
+                    AdminTools adminTools = new AdminTools(viewer, reader, productDao, orderDao);
                     adminTools.adminController();
                     break;
                 default:

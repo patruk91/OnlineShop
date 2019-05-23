@@ -139,6 +139,20 @@ public class ProductDaoSQL implements ProductDao {
         return categories;
     }
 
+    @Override
+    public void createCategory(String category) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                     "INSERT INTO categories(categoryName) VALUES(?)")){
+            stmt.setString(1, category);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+    }
+
     private void addCategory(PreparedStatement stmt, TreeMap<String, Integer> categories) throws SQLException {
         try (ResultSet resultSet = stmt.executeQuery()) {
             while (resultSet.next()) {
@@ -146,6 +160,35 @@ public class ProductDaoSQL implements ProductDao {
                 String name = resultSet.getString("categoryName");
                 categories.put(name, categoryId);
             }
+        }
+    }
+
+    @Override
+    public void updateCategory(String category, int categoryId) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                     "UPDATE categories SET categoryName = ? WHERE cid = ?")) {
+            stmt.setString(1, category);
+            stmt.setInt(2, categoryId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+    }
+
+    @Override
+    public void deleteCategory(int categoryId) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement removeOrder = connection.prepareStatement(
+                     "DELETE FROM categories WHERE cid = ?")) {
+            removeOrder.setInt(1, categoryId);
+            removeOrder.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
         }
     }
 }
