@@ -1,7 +1,5 @@
 package com.codecool.model;
 
-import java.util.Objects;
-
 public class Product {
     private int productId;
     private String name;
@@ -9,14 +7,26 @@ public class Product {
     private double price;
     private boolean status;
     private int categoryId;
+    private int id;
 
-    public Product(int productId, String name, int amount, double price, boolean status, int categoryId) {
-        this.productId = productId;
+    public Product(String name, int amount, double price, boolean status, int categoryId) {
         this.name = name;
         this.amount = amount;
         this.price = price;
         this.status = status;
         this.categoryId = categoryId;
+    }
+
+    public Product(int productId, String name, int amount, double price, boolean status, int categoryId) {
+        this(name, amount, price, status, categoryId);
+        this.productId = productId;
+    }
+
+    public Product(int id, String name, double price, int amount){
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.amount = amount;
     }
 
     public int getProductId() {

@@ -14,40 +14,68 @@ import java.util.TreeMap;
 public class ProductDaoSQL implements ProductDao {
     @Override
     public void createProduct(Product product) {
-        Connection connection = DatabaseConnection.getConntectionToDatabase();
-
-        try {
-            PreparedStatement stmt = connection.prepareStatement(
-                    "INSERT INTO products(name, quantity, price, status, categoryId) VALUES(?, ?, ?, ?. ?);");
-            stmt.setString(1, product.getName());
-            stmt.setInt(2, product.getAmount());
-            stmt.setDouble(3, product.getPrice());
-            stmt.setBoolean(4, product.isStatus());
-            stmt.setInt(5, product.getCategoryId());
-            stmt.executeUpdate();
-
-            stmt.close();
-            connection.close();
-
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                "INSERT INTO products(name, quantity, price, status, categoryId) VALUES(?, ?, ?, ?, ?);")){
+            insertProductData(stmt, product);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
         }
+    }
 
+    private void insertProductData(PreparedStatement stmt, Product product) throws SQLException {
+        stmt.setString(1, product.getName());
+        stmt.setInt(2, product.getAmount());
+        stmt.setDouble(3, product.getPrice());
+        stmt.setString(4, product.isStatus() ? "active" : "deactivate");
+        stmt.setInt(5, product.getCategoryId());
+        stmt.executeUpdate();
     }
 
     @Override
-    public List<Product> readProduct(String column, String data) {
-        Connection connection = DatabaseConnection.getConntectionToDatabase();
+    public List<Product> readProduct(String column, String data, String userType) {
+        String query = "";
+        if (userType.equals("admin")) {
+            query = "SELECT * FROM products JOIN categories ON categoryId = cid WHERE "
+                    + column + " LIKE ?";
+        } else {
+            query = "SELECT * FROM products JOIN categories ON categoryId = cid WHERE "
+                    + column + " LIKE ? AND status = 'active'";
+        }
+
         List<Product> products = new ArrayList<>();
-
-        try {
-            PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT * FROM products JOIN categories ON categoryId = cid WHERE " + column +" LIKE ?");
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, "%" + data + "%");
+            addProduct(stmt, products);
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+        return products;
+    }
 
+    @Override
+    public List<Product> readProduct(String userType) {
+        String query = "SELECT * FROM products JOIN categories ON categoryId = cid";
 
-            ResultSet resultSet = stmt.executeQuery();
+        List<Product> products = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            addProduct(stmt, products);
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+        return products;
+    }
 
+    private void addProduct(PreparedStatement stmt, List<Product> products) throws SQLException {
+        try (ResultSet resultSet = stmt.executeQuery()) {
             while (resultSet.next()) {
                 int productId = resultSet.getInt("pid");
                 String name = resultSet.getString("name");
@@ -55,86 +83,112 @@ public class ProductDaoSQL implements ProductDao {
                 double price = resultSet.getDouble("price");
                 boolean status = resultSet.getString("status").equals("active");
                 int categoryId = resultSet.getInt("categoryId");
-
                 Product product = new Product(productId, name, quantity, price, status, categoryId);
                 products.add(product);
             }
-            stmt.close();
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return products;
+
     }
 
     @Override
-    public void updateProduct(Product product, String column) {
-        Connection connection = DatabaseConnection.getConntectionToDatabase();
-
-        try {
-            PreparedStatement stmt = connection.prepareStatement(
-                    "UPDATE products set " +  column + " = ? WHERE id = ?");
-            updateDataForProduct(product, column, stmt);
-            stmt.setInt(2, product.getProductId());
-            stmt.executeUpdate();
-
-            stmt.close();
-            connection.close();
+    public void updateProduct(Product product) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                "UPDATE products SET name = ?, quantity = ?, price = ?, categoryId = ? WHERE pid = ?")) {
+            updateData(product, stmt);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
         }
     }
 
-    private void updateDataForProduct(Product product, String column, PreparedStatement stmt) {
-        try {
-            switch (column) {
-                case "name":
-                    stmt.setString(1, product.getName());
-                    break;
-                case "quantity":
-                    stmt.setInt(1, product.getAmount());
-                    break;
-                case "price":
-                    stmt.setDouble(1, product.getPrice());
-                    break;
-                case "status":
-                    stmt.setBoolean(1, product.isStatus());
-                    break;
-                case "categoryId":
-                    stmt.setInt(1, product.getProductId());
-                    break;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private void updateData(Product product, PreparedStatement stmt) throws SQLException {
+        stmt.setString(1, product.getName());
+        stmt.setInt(2, product.getAmount());
+        stmt.setDouble(3, product.getPrice());
+        stmt.setInt(4, product.getCategoryId());
+        stmt.setInt(5, product.getProductId());
+        stmt.executeUpdate();
     }
 
     @Override
     public void deleteProduct(Product product) {
-        Connection connection = DatabaseConnection.getConntectionToDatabase();
-        try {
-            PreparedStatement removeOrder = connection.prepareStatement("DELETE FROM products WHERE pid = ?");
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement removeOrder = connection.prepareStatement(
+                     "DELETE FROM products WHERE pid = ?")) {
             removeOrder.setInt(1, product.getProductId());
+            removeOrder.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
         }
     }
 
     @Override
     public TreeMap<String, Integer> getCategories() {
-        Connection connection = DatabaseConnection.getConntectionToDatabase();
         TreeMap<String, Integer> categories = new TreeMap<>();
-        try {
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories");
-            ResultSet resultSet = stmt.executeQuery();
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories")) {
+            addCategory(stmt, categories);
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());        }
+        return categories;
+    }
+
+    @Override
+    public void createCategory(String category) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                     "INSERT INTO categories(categoryName) VALUES(?)")){
+            stmt.setString(1, category);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+    }
+
+    private void addCategory(PreparedStatement stmt, TreeMap<String, Integer> categories) throws SQLException {
+        try (ResultSet resultSet = stmt.executeQuery()) {
             while (resultSet.next()) {
                 int categoryId = resultSet.getInt("cid");
                 String name = resultSet.getString("categoryName");
                 categories.put(name, categoryId);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return categories;
+    }
+
+    @Override
+    public void updateCategory(String category, int categoryId) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                     "UPDATE categories SET categoryName = ? WHERE cid = ?")) {
+            stmt.setString(1, category);
+            stmt.setInt(2, categoryId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+    }
+
+    @Override
+    public void deleteCategory(int categoryId) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement removeOrder = connection.prepareStatement(
+                     "DELETE FROM categories WHERE cid = ?")) {
+            removeOrder.setInt(1, categoryId);
+            removeOrder.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
     }
 }

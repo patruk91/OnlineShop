@@ -4,10 +4,10 @@ import com.codecool.dao.ProductDao;
 import com.codecool.model.Basket;
 import com.codecool.model.OrderDetail;
 import com.codecool.model.Product;
-import com.codecool.reader.Reader;
-import com.codecool.viewer.View;
+import com.codecool.view.reader.Reader;
+import com.codecool.view.viewer.View;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -16,12 +16,14 @@ public class ProductChooser {
     private View view;
     private ProductDao productDao;
     private Basket basket;
-    private List<Product> products = new ArrayList<>();
+    private List<Product> products;
 
     public ProductChooser(Reader reader, View view, ProductDao productDao) {
         this.reader = reader;
         this.view = view;
         this.productDao = productDao;
+        products = productDao.readProduct("status", "active", "customer");
+
     }
 
     public ProductChooser(Reader reader, View view, ProductDao productDao, Basket basket) {
@@ -32,7 +34,7 @@ public class ProductChooser {
     public void productController(String userType) {
         boolean backToMenu = false;
         final int START = 1;
-        int end = userType.equals("anonymous") ?  3 :  4;
+        int end = userType.equals("anonymous") ?  3 : 4;
         while (!backToMenu) {
             displayMenu(userType);
             view.displayQuestion("Choose menu option");
@@ -42,21 +44,207 @@ public class ProductChooser {
                     backToMenu = true;
                     break;
                 case 2:
-                    displayProductsByCategory();
+                    displayProductsByCategory(userType);
                     break;
                 case 3:
-                    displayProductsByName();
+                    displayProductsByName(userType);
                     break;
                 case 4:
-                    addProductToBasket(userType);
-                    break;
+                    if (userType.equals("admin")) {
+                        editProducts();
+                        break;
+                    } else {
+                        addProductToBasket(userType);
+                        break;
+                    }
+                default:
+                    view.displayMessage("No option available!");
             }
         }
+    }
+
+    private void editProducts() {
+        products = productDao.readProduct("admin");
+        displayEditMenu();
+    }
+
+    private void displayEditMenu() {
+        String editMenu = "1.Add product 2. Edit product 3.Remove product";
+        view.displayMenu(editMenu);
+        final int START = 1;
+        final int END = 3;
+
+
+        view.displayQuestion("Choose menu option");
+        int option = reader.getNumberInRange(START, END);
+        switch (option) {
+            case 1:
+                addProduct();
+                break;
+            case 2:
+                editProduct();
+                break;
+            case 3:
+                removeProduct();
+                break;
+            default:
+                view.displayMessage("No option available!");
+        }
+    }
+
+    private void removeProduct() {
+        products = productDao.readProduct("admin");
+        view.displayQuestion("Choose product to remove");
+        String product = reader.getNotEmptyString();
+        if (isProductOnList(product)) {
+            productDao.deleteProduct(getProductByName(product));
+        } else {
+            view.displayError("No product by that name in database!");
+        }
+
+    }
+
+    private void addProduct() {
+        String productName = getProductName();
+        int quantity = getQuantity();
+        double price = getPrice();
+        boolean orderStatus = getOrderStatus();
+        int categoryId = getCategoryId();
+        Product product = new Product(productName, quantity, price, orderStatus, categoryId);
+        productDao.createProduct(product);
+    }
+
+    private int getCategoryId() {
+        view.displayMessage("Category: ");
+        String category = reader.getNotEmptyString().toUpperCase();
+        return findCategoryId(category);
+    }
+
+    private boolean getOrderStatus() {
+        view.displayMessage("Order status: ");
+        return reader.getNotEmptyString().equalsIgnoreCase("active");
+    }
+
+    private double getPrice() {
+        view.displayMessage("Enter price: ");
+        return reader.getNumberInRange(0, Double.MAX_VALUE);
+    }
+
+    private int getQuantity() {
+        view.displayMessage("Enter quantity: ");
+        return reader.getNumberInRange(0, Integer.MAX_VALUE);
+    }
+
+    private String getProductName() {
+        view.displayMessage("Enter product name: ");
+        return reader.getNotEmptyString();
+    }
+
+    private int findCategoryId(String category) {
+        int number = 0;
+        TreeMap<String, Integer> categories = productDao.getCategories();
+        for (String productCategory : categories.keySet()) {
+            if (productCategory.equalsIgnoreCase(category)) {
+                return categories.get(category);
+            }
+        }
+        return number;
+    }
+
+    private void editProduct() {
+        displayProductsByName("admin");
+        boolean endEdition = false;
+        while(!endEdition) {
+            Product productToEdit = getProductToEdit();
+            view.displayQuestion("Chose data to edit [name, price, amount, status, categoryId]");
+            String option = reader.getNotEmptyString();
+            switch (option) {
+                case "name":
+                    editName(productToEdit);
+                    break;
+                case "price":
+                    editPrice(productToEdit);
+                    break;
+                case "amount":
+                    editAmount(productToEdit);
+                    break;
+                case "status":
+                    editStatus(productToEdit);
+                    break;
+                case "categoryId":
+                    editCategoryId(productToEdit);
+                    break;
+                default:
+                    view.displayError("Incorrect option");
+                    break;
+            }
+            view.displayQuestion("Edit more data");
+            String editMore = reader.getNotEmptyString();
+            switch (editMore) {
+                case "yes":
+                    view.displayProductsForAdmin(products);
+                    break;
+                case "no":
+                    commitChanges(productToEdit);
+                    endEdition = true;
+                    break;
+                default :
+                    view.displayError("Incorrect option [yes/no]");
+            }
+
+        }
+    }
+
+    private void commitChanges(Product productToEdit) {
+        productDao.updateProduct(productToEdit);
+    }
+
+    private void editCategoryId(Product productToEdit) {
+        view.displayCategories(productDao.getCategories());
+        productToEdit.setCategoryId(getCategoryId());
+    }
+
+    private void editStatus(Product productToEdit) {
+        productToEdit.setStatus(getOrderStatus());
+    }
+
+    private void editAmount(Product productToEdit) {
+        productToEdit.setAmount(getQuantity());
+    }
+
+    private void editPrice(Product productToEdit) {
+        productToEdit.setPrice(getPrice());
+    }
+
+    private void editName(Product productToEdit) {
+        productToEdit.setName(getProductName());
+    }
+
+    private Product getProductToEdit() {
+        String specificProductName = "";
+        boolean isProductNameCorrect = false;
+        while (!isProductNameCorrect && products.size() != 1) {
+            view.displayMessage("Specify product!");
+            specificProductName = getProductName();
+            products = productDao.readProduct("name", specificProductName, "admin");
+            if (isProductOnList(specificProductName)) {
+                isProductNameCorrect = true;
+                displayProducts("admin");
+            }
+        }
+
+        if (products.size() == 1) {
+            int firstProduct = 0;
+            specificProductName = products.get(firstProduct).getName();
+        }
+
+        return getProductByName(specificProductName);
     }
 
     private void displayMenu(String userType) {
         String unloggedMenu = "1. Back to main menu 2. By category 3. By name";
         String userMenu = "1. Back to main menu 2. By category 3. By name 4. Add product to basket";
+        String adminMenu = "1. Back to main menu 2. Show by category 3. Show by name 4. Edit products";
 
         switch (userType) {
             case "anonymous":
@@ -65,47 +253,87 @@ public class ProductChooser {
             case "customer":
                 view.displayMenu(userMenu);
                 break;
+            case "admin":
+                view.displayMenu(adminMenu);
+                break;
             default:
                 view.displayError("No option available");
                 break;
         }
     }
 
-    private void displayProductsByCategory() {
+
+    private void displayProductsByCategory(String userType) {
         view.clearScreen();
         TreeMap<String, Integer> categories = productDao.getCategories();
-        displayCategories(categories);
+        view.displayCategories(categories);
         String category = reader.getCategoryFromUser(categories.keySet());
-        products = productDao.readProduct("categoryName", category);
-        displayProducts();
+        products = productDao.readProduct("categoryName", category, userType);
+        displayProducts(userType);
     }
 
-    private void displayProductsByName() {
+    private void displayProductsByName(String userType) {
         view.clearScreen();
-        String productName = reader.getStringFromUser("Enter product name");
-        products = productDao.readProduct("name", productName);
-        displayProducts();
+        String productName = getProductName();
+        products = productDao.readProduct("name", productName, userType);
+        if (isProductOnList(productName)) {
+            displayProducts(userType);
+        } else {
+            view.displayError("No game by that name");
+        }
     }
 
     private void addProductToBasket(String userType) {
-        if (userType.equals("customer") && products.size() > 0) {
-            String productNameBasket = reader.getStringFromUser("Enter product name");
-            if (productOnList(productNameBasket)) {
-                view.displayMessage("Enter product amount: ");
-                int quantity = reader.getNumberInRange(1, getProductByName(productNameBasket).getAmount());
-                if (basket.getOrderDetails().size() > 0 && checkIfProductIsInBasket(productNameBasket)) {
-                    updateProductInBasket(productNameBasket, quantity);
-                } else {
-                    basket.addOrderDetails(new OrderDetail(getProductByName(productNameBasket), quantity));
-                }
-
-                view.clearScreen();
-            } else {
-                view.displayMessage("No product available by that name!");
-            }
-        } else {
-            view.displayMessage("No product on list!");
+        if (userType.equals("customer")) {
+            String productNameInBasket = getProductName();
+            ifProductOnList(productNameInBasket);
         }
+    }
+
+    private void ifProductOnList(String productNameInBasket) {
+        if (isProductOnList(productNameInBasket)) {
+            int quantity = getQuantity(productNameInBasket);
+            ifProductInBasket(productNameInBasket, quantity);
+            view.clearScreen();
+        } else {
+            view.displayMessage("No product available by that name!");
+        }
+    }
+
+    private int getQuantity(String productNameInBasket) {
+        view.displayMessage("Enter product amount: ");
+        return reader.getNumberInRange(1, getProductByName(productNameInBasket).getAmount());
+    }
+
+    private void ifProductInBasket(String productNameInBasket, int quantity) {
+        if (basket.getOrderDetails().size() > 0 && checkIfProductIsInBasket(productNameInBasket)) {
+            addProductIfEnoughAmountInStock(productNameInBasket, quantity);
+        } else {
+            basket.addOrderDetails(new OrderDetail(getProductByName(productNameInBasket), quantity));
+        }
+    }
+
+    private void addProductIfEnoughAmountInStock(String productNameInBasket, int quantity) {
+        if (isExceedStock(productNameInBasket, quantity)) {
+            updateProductInBasket(productNameInBasket, quantity);
+        } else {
+            view.displayMessage("Not enough amount of product in our shop!");
+        }
+    }
+
+    private boolean isExceedStock(String productNameInBasket, int quantity) {
+        OrderDetail userOrder = getOrderDetailFromBasket(productNameInBasket);
+        int maxAmount = userOrder.getProduct().getAmount();
+        return quantity + userOrder.getQuantity() < maxAmount;
+    }
+
+    private OrderDetail getOrderDetailFromBasket(String productNameInBasket) throws IllegalArgumentException {
+        for (OrderDetail orderDetail : basket.getOrderDetails()) {
+            if (orderDetail.getProduct().getName().equalsIgnoreCase(productNameInBasket)) {
+                return orderDetail;
+            }
+        }
+        throw new IllegalArgumentException("Order detail doesn't exist in basket!");
     }
 
     private boolean checkIfProductIsInBasket(String productNameBasket) {
@@ -125,26 +353,7 @@ public class ProductChooser {
         }
     }
 
-    private void displayCategories(TreeMap<String, Integer> categories){
-        StringBuilder sb = new StringBuilder();
-        for (String category : categories.keySet()) {
-            sb.append(category);
-            sb.append("\n");
-        }
-        view.displayTable(sb.toString());
-    }
-
-    private void displayProducts() {
-        StringBuilder sb = new StringBuilder();
-        for (Product product : products) {
-            sb.append(product.toString());
-            sb.append("\n");
-        }
-        view.clearScreen();
-        view.displayTable(sb.toString());
-    }
-
-    private boolean productOnList(String name) {
+    private boolean isProductOnList(String name) {
         for (Product product : products) {
             if (name.toLowerCase().equals(product.getName().toLowerCase())) {
                 return true;
@@ -153,12 +362,22 @@ public class ProductChooser {
         return false;
     }
 
-    private Product getProductByName(String name) {
+    private Product getProductByName(String name) throws IllegalArgumentException {
         for (Product product : products) {
             if (product.getName().toLowerCase().equals(name.toLowerCase())) {
                 return product;
             }
         }
-        return new Product(0,"",0,0,false,0);
+        throw new IllegalArgumentException("No product by that name!");
+    }
+
+    private void displayProducts(String userType) {
+        if(userType.equals("admin")){
+            view.displayProductsForAdmin(products);
+        }else{
+            view.displayProductsForUser(products);
+        }
+
     }
 }
+

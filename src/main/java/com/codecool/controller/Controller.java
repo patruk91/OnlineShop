@@ -1,9 +1,6 @@
 package com.codecool.controller;
 
-import com.codecool.controller.handler.BasketOperator;
-import com.codecool.controller.handler.Login;
-import com.codecool.controller.handler.ProductChooser;
-import com.codecool.controller.handler.Register;
+import com.codecool.controller.handler.*;
 import com.codecool.dao.UserDao;
 import com.codecool.dao.OrderDao;
 import com.codecool.dao.ProductDao;
@@ -12,10 +9,10 @@ import com.codecool.dao.SQL.ProductDaoSQL;
 import com.codecool.dao.SQL.UserDaoSQL;
 import com.codecool.model.Basket;
 import com.codecool.model.User;
-import com.codecool.reader.Reader;
-import com.codecool.validator.InputValidator;
-import com.codecool.viewer.View;
-import com.codecool.viewer.textViewer.TextView;
+import com.codecool.view.reader.Reader;
+import com.codecool.view.validator.InputValidator;
+import com.codecool.view.viewer.View;
+import com.codecool.view.viewer.textViewer.TextView;
 
 public class Controller {
 
@@ -29,22 +26,25 @@ public class Controller {
     private Basket basket;
 
     public Controller() {
-        user = new User(2, "customer");
-        basket = new Basket(user.getId());        // Temporary solution before log in handler is coded
+        user = new User(0, "anonymous", "anonymous");
+        basket = new Basket(0);
     }
 
     public void runner() {
         boolean exitApp = false;
         while(!exitApp) {
             viewer.clearScreen();
-
+            viewer.displayMessage("User: " + user.getLogin());
             if(user.getId() == 0) {
                 viewer.displayMenu("e. Exit, s. Show products, li. Login, r. Register");
+            } else if (user.getId() == 1) {
+                viewer.displayMenu("e. Exit, s. Edit order, lo. Log out, t. Admin Tools");
             } else {
-                viewer.displayMenu("e. Exit, s. Place order, lo. Log out, b. Basket");
+                viewer.displayMenu("e. Exit, s. Place order, lo. Log out, b. Basket, p. Profile");
             }
 
-            String option = reader.getStringFromUser("Choose menu option");
+            viewer.displayQuestion("Choose menu option");
+            String option = reader.getNotEmptyString();
             switch(option) {
                 case "e":
                     exitApp = true;
@@ -61,18 +61,44 @@ public class Controller {
                     productChooser.productController(user.getType());
                     break;
                 case "b":
-                    BasketOperator basketOperator = new BasketOperator(reader, viewer, orderDao);
-                    basketOperator.controller(basket);
+                    if(user.getType().equals("customer")) {
+                        BasketOperator basketOperator = new BasketOperator(reader, viewer, orderDao);
+                        basketOperator.controller(basket);
+                    } else {
+                        viewer.displayError("Please, provide correct data");
+                    }
                     break;
                 case "li":
                 case "lo":
-//                    Login login = new Login(reader, viewer, inputValidator, userDao);
-//                    login.controller(user, basket);
-//                    break;
+                    Login login = new Login(user, reader, viewer, userDao);
+                    login.controller(basket);
+                    this.user = login.getUser();
+                    break;
                 case "r":
-//                    Register register = new Register(reader, viewer, inputValidator, userDao);
-//                    register.controller();
-//                    break;
+                    if (user.getType().equals("anonymous")) {
+                        Register register = new Register(viewer, reader, userDao);
+                        register.controller();
+                    } else {
+                        viewer.displayError("Please, provide correct data");
+                    }
+                    break;
+                case "p":
+                    if(user.getType().equals("customer")) {
+                        UserProfile userProfile = new UserProfile(user, reader, viewer, userDao, orderDao);
+                        userProfile.controller();
+                        this.user = userProfile.getUser();
+                    } else {
+                        viewer.displayError("Please, provide correct data");
+                    }
+                    break;
+                case "t":
+                    if (user.getType().equals("admin")) {
+                        AdminTools adminTools = new AdminTools(viewer, reader, productDao, orderDao);
+                        adminTools.adminController();
+                    } else {
+                        viewer.displayError("Please, provide correct data");
+                    }
+                    break;
                 default:
                     viewer.displayError("Please, provide correct data");
             }

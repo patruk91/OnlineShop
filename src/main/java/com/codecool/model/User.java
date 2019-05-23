@@ -1,15 +1,18 @@
 package com.codecool.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class User {
     private int id;
     private String type;
     private String login;
     private String name;
     private String lastName;
-    private List<Address> addresses = new ArrayList<>();
+    private Address addresses;
+
+    public User(int id, String login, String type) {
+        this.id = id;
+        this.login = login;
+        this.type = type;
+    }
 
     public User(int id, String type) {
         this.id = id;
@@ -43,8 +46,12 @@ public class User {
         return lastName;
     }
 
-    public List<Address> getAddresses() {
+    public Address getAddres() {
         return addresses;
+    }
+
+    public void setAddresses(Address addresses) {
+        this.addresses = addresses;
     }
 
     public void setId(int id) {
@@ -65,9 +72,5 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public void addAddresses(Address address) {
-        this.addresses.add(address);
     }
 }
