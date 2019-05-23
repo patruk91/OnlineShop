@@ -17,6 +17,7 @@ public class ProductChooser {
     private ProductDao productDao;
     private Basket basket;
     private List<Product> products;
+    private Product productToEdit;
 
     public ProductChooser(Reader reader, View view, ProductDao productDao) {
         this.reader = reader;
@@ -88,7 +89,6 @@ public class ProductChooser {
                 break;
             default:
                 view.displayMessage("No option available!");
-
         }
     }
 
@@ -128,13 +128,6 @@ public class ProductChooser {
         return reader.getNotEmptyString();
     }
 
-    private void editProduct() {
-        view.displayMessage("Choose product by name: ");
-        String productName = reader.getNotEmptyString();
-        productDao.readProduct("name", productName, "admin");
-
-    }
-
     private int findCategoryId(String category) {
         int number = 0;
         TreeMap<String, Integer> categories = productDao.getCategories();
@@ -144,6 +137,92 @@ public class ProductChooser {
             }
         }
         return number;
+    }
+
+    private void editProduct() {
+        displayProductsByName("admin");
+        boolean endEdition = false;
+        while(!endEdition) {
+
+            Product productToEdit = getProductToEdit();
+            view.displayQuestion("Chose data to edit [name, price, amount, status, categoryId]");
+            String option = reader.getNotEmptyString();
+            switch (option) {
+                case "name":
+                    editName(productToEdit);
+                    break;
+                case "price":
+                    editPrice(productToEdit);
+                    break;
+                case "amount":
+                    editAmount(productToEdit);
+                    break;
+                case "status":
+                    editStatus(productToEdit);
+                    break;
+                case "categoryId":
+                    editCategoryId(productToEdit);
+                    break;
+                default:
+                    view.displayError("Incorrect option");
+                    break;
+            }
+            view.displayQuestion("Edit more data");
+            String editMore = reader.getNotEmptyString();
+            switch (editMore) {
+                case "yes":
+                    view.displayProductsForAdmin(products);
+                    break;
+                case "no":
+                    commitChanges(productToEdit);
+                    endEdition = true;
+                    break;
+                default :
+                    view.displayError("Incorrect option [yes/no]");
+            }
+
+        }
+    }
+
+    private void commitChanges(Product productToEdit) {
+        productDao.updateProduct(productToEdit);
+    }
+
+    private void editCategoryId(Product productToEdit) {
+        displayCategories(productDao.getCategories());
+        productToEdit.setCategoryId(getCategoryId());
+    }
+
+    private void editStatus(Product productToEdit) {
+        productToEdit.setStatus(getOrderStatus());
+    }
+
+    private void editAmount(Product productToEdit) {
+        productToEdit.setAmount(getQuantity());
+    }
+
+    private void editPrice(Product productToEdit) {
+        productToEdit.setPrice(getPrice());
+    }
+
+    private void editName(Product productToEdit) {
+        productToEdit.setName(getProductName());
+    }
+
+    private Product getProductToEdit() {
+        String specificProductName = "";
+        boolean isProductNameCorrect = false;
+        while (!isProductNameCorrect && products.size() != 1) {
+            view.displayMessage("Specify product!");
+            specificProductName = getProductName();
+            if (productOnList(specificProductName)) {
+                isProductNameCorrect = true;
+            }
+        }
+        int firstProduct = 0;
+        specificProductName = products.get(firstProduct).getName();
+
+        return getProductByName(specificProductName);
     }
 
     private void displayMenu(String userType) {
@@ -286,7 +365,7 @@ public class ProductChooser {
     }
 
     private void displayProducts(String userType) {
-        if(userType == "admin"){
+        if(userType.equals("admin")){
             view.displayProductsForAdmin(products);
         }else{
             view.displayProductsForUser(products);
