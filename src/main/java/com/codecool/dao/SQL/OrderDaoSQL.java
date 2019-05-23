@@ -78,7 +78,6 @@ public class OrderDaoSQL implements OrderDao {
              PreparedStatement stmt = connection.prepareStatement(
                 "SELECT * FROM orders WHERE userId = ?")) {
             stmt.setInt(1, userId);
-            System.out.println();
             try (ResultSet userOrders = stmt.executeQuery()) {
                 while (userOrders.next()) {
                     int oid = userOrders.getInt("oid");
@@ -109,6 +108,33 @@ public class OrderDaoSQL implements OrderDao {
         return userOrdersList;
     }
 
+    @Override
+    public List<Order> readOrder() {
+        List<Order> userOrdersList = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                     "SELECT * FROM orders")) {
+            try (ResultSet userOrders = stmt.executeQuery()) {
+                while (userOrders.next()) {
+                    int oid = userOrders.getInt("oid");
+                    int userId = userOrders.getInt("userId");
+                    String orderStatus = userOrders.getString("statusName");
+
+                    Order order = new Order(userId, oid, orderStatus);
+
+                    Long date = userOrders.getLong("date");
+                    order.setDate(new java.util.Date(date));
+
+                    userOrdersList.add(order);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userOrdersList;
+    }
+
 
     private void addOrderDetails(ResultSet rs, Order order) throws SQLException {
         int pid = rs.getInt("pid");
@@ -130,7 +156,16 @@ public class OrderDaoSQL implements OrderDao {
 
     @Override
     public void updateOder(Order order) {
-
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement("UPDATE orders SET statusName = ? WHERE oid = ?")){
+            stmt.setString(1, order.getOrderStatus());
+            stmt.setInt(2, order.getOrderId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
     }
 
     @Override
