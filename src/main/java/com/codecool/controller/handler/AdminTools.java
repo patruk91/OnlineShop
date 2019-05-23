@@ -60,7 +60,7 @@ public class AdminTools {
                     addCategory();
                     break;
                 case 3:
-//                    editCategory();
+                    editCategory();
                     break;
                 case 4:
 //                    removeCategory();
@@ -72,9 +72,21 @@ public class AdminTools {
 
     }
 
+    private void editCategory() {
+        view.displayCategories(productDao.getCategories());
+
+    }
+
     private void addCategory() {
         view.displayMessage("New category: ");
         String category = reader.getNotEmptyString().toUpperCase();
-        productDao.createCategory(category);
+        for (String categoryName : productDao.getCategories().keySet()) {
+            if (!categoryName.equalsIgnoreCase(category)) {
+                productDao.createCategory(category);
+            } else {
+                view.displayError("Category already exists!");
+            }
+        }
+
     }
 }
