@@ -43,6 +43,17 @@ public class Reader {
         return input;
     }
 
+    private String getDoubleAsString() {
+        String input = "";
+        while (!inputValidator.isDouble(input)) {
+            input = getNotEmptyString();
+            if (!inputValidator.isDouble(input)) {
+                view.displayError("Please, provide numeric data");
+            }
+        }
+        return input;
+    }
+
     public int getNumberInRange(int start, int end) {
         int number = Integer.parseInt(getNumberAsString());
         while (!inputValidator.isInRange(number, start, end)) {
@@ -53,10 +64,10 @@ public class Reader {
     }
 
     public double getNumberInRange(double start, double end) {
-        double number = Double.parseDouble(getNumberAsString());
+        double number = Double.parseDouble(getDoubleAsString());
         while (!inputValidator.isInRange(number, start, end)) {
             view.displayError("Please, provide number in range");
-            number = Double.parseDouble(getNumberAsString());
+            number = Double.parseDouble(getDoubleAsString());
         }
         return number;
     }

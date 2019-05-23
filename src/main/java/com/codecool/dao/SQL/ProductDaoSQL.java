@@ -58,6 +58,22 @@ public class ProductDaoSQL implements ProductDao {
         return products;
     }
 
+    @Override
+    public List<Product> readProduct(String userType) {
+        String query = "SELECT * FROM products JOIN categories ON categoryId = cid";
+
+        List<Product> products = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            addProduct(stmt, products);
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+        return products;
+    }
+
     private void addProduct(PreparedStatement stmt, List<Product> products) throws SQLException {
         try (ResultSet resultSet = stmt.executeQuery()) {
             while (resultSet.next()) {
@@ -75,13 +91,11 @@ public class ProductDaoSQL implements ProductDao {
     }
 
     @Override
-    public void updateProduct(Product product, String column) {
+    public void updateProduct(Product product) {
         try (Connection connection = DatabaseConnection.getConntectionToDatabase();
              PreparedStatement stmt = connection.prepareStatement(
-                "UPDATE products set " +  column + " = ? WHERE id = ?")) {
-            updateColumn(product, column, stmt);
-            stmt.setInt(2, product.getProductId());
-            stmt.executeUpdate();
+                "UPDATE products SET name = ?, quantity = ?, price = ?, categoryId = ? WHERE pid = ?")) {
+            updateData(product, stmt);
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage()
                     + "\nSQLState: " + e.getSQLState()
@@ -89,24 +103,13 @@ public class ProductDaoSQL implements ProductDao {
         }
     }
 
-    private void updateColumn(Product product, String column, PreparedStatement stmt) throws SQLException {
-        switch (column) {
-            case "name":
-                stmt.setString(1, product.getName());
-                break;
-            case "quantity":
-                stmt.setInt(1, product.getAmount());
-                break;
-            case "price":
-                stmt.setDouble(1, product.getPrice());
-                break;
-            case "status":
-                stmt.setBoolean(1, product.isStatus());
-                break;
-            case "categoryId":
-                stmt.setInt(1, product.getProductId());
-                break;
-        }
+    private void updateData(Product product, PreparedStatement stmt) throws SQLException {
+        stmt.setString(1, product.getName());
+        stmt.setInt(2, product.getAmount());
+        stmt.setDouble(3, product.getPrice());
+        stmt.setInt(4, product.getCategoryId());
+        stmt.setInt(5, product.getProductId());
+        stmt.executeUpdate();
     }
 
     @Override
@@ -115,6 +118,7 @@ public class ProductDaoSQL implements ProductDao {
              PreparedStatement removeOrder = connection.prepareStatement(
                      "DELETE FROM products WHERE pid = ?")) {
             removeOrder.setInt(1, product.getProductId());
+            removeOrder.executeUpdate();
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage()
                     + "\nSQLState: " + e.getSQLState()

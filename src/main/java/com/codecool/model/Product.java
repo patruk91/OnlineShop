@@ -9,13 +9,18 @@ public class Product {
     private int categoryId;
     private int id;
 
-    public Product(int productId, String name, int amount, double price, boolean status, int categoryId) {
-        this.productId = productId;
+    public Product(String name, int amount, double price, boolean status, int categoryId) {
         this.name = name;
         this.amount = amount;
         this.price = price;
         this.status = status;
         this.categoryId = categoryId;
+    }
+
+    public Product(int productId, String name, int amount, double price, boolean status, int categoryId) {
+        this(name, amount, price, status, categoryId);
+        this.productId = productId;
+
     }
 
     public Product(int id, String name, double price, int amount){
