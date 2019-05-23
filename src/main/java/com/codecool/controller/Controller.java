@@ -88,7 +88,7 @@ public class Controller {
                     break;
 
                 case "t":
-                    AdminTools adminTools = new AdminTools(viewer, reader);
+                    AdminTools adminTools = new AdminTools(viewer, reader, productDao);
                     adminTools.adminController();
                     break;
                 default:

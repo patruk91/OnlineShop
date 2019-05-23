@@ -145,6 +145,7 @@ public class ProductDaoSQL implements ProductDao {
              PreparedStatement stmt = connection.prepareStatement(
                      "INSERT INTO categories(categoryName) VALUES(?)")){
             stmt.setString(1, category);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage()
                     + "\nSQLState: " + e.getSQLState()
