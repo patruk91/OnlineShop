@@ -133,6 +133,7 @@ public class UserProfile {
     private void displayMyOrders() {
         List<Order> myOrders = orderDao.readOrder(user.getId());
         viewer.displayOrders(myOrders);
+        reader.promptEnterKey();
     }
 
     private void commitChanges() {
