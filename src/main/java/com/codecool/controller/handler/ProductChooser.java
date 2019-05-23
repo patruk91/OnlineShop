@@ -8,7 +8,6 @@ import com.codecool.view.reader.Reader;
 import com.codecool.view.viewer.View;
 
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 public class ProductChooser {

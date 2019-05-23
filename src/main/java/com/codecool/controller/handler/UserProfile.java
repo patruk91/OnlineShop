@@ -31,6 +31,8 @@ public class UserProfile {
     public void controller() {
         boolean backToMenu = false;
         while (!backToMenu) {
+            viewer.clearScreen();
+            viewer.displayMessage("User: " + user.getLogin());
             viewer.displayMenu("1. Back to main menu 2. Edit my data 3. My orders");
             viewer.displayQuestion("Choose menu option");
             int option = reader.getNumberInRange(1, 3);

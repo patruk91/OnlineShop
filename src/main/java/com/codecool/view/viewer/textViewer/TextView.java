@@ -83,7 +83,6 @@ public class TextView implements View {
             id++;
         }
         System.out.println(FlipTable.of(headers, list));
-
     }
 
     @Override
@@ -99,17 +98,6 @@ public class TextView implements View {
         System.out.println("City: " + user.getAddres().getCity());
         System.out.println("Zip Code: " + user.getAddres().getZipCode());
         System.out.println("Country: " + user.getAddres().getCountry());
-//        String[] headers = {"Name", "Last name", "Address"};
-//        String[][] list = new String[1][];
-//        Address address = user.getAddres();
-//        list[0][0] = user.getName();
-//        list[0][1] = user.getLastName();
-//        list[0][2] = address.getCountry();
-//        list[0][3] = address.getCity();
-//        list[0][4] = address.getZipCode();
-//        list[0][5] = address.getStreet();
-//
-//        System.out.println(FlipTable.of(headers, list));
     }
 
     @Override
