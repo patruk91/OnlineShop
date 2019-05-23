@@ -29,7 +29,7 @@ public class ProductDaoSQL implements ProductDao {
         stmt.setString(1, product.getName());
         stmt.setInt(2, product.getAmount());
         stmt.setDouble(3, product.getPrice());
-        stmt.setBoolean(4, product.isStatus());
+        stmt.setString(4, product.isStatus() ? "active" : "deactivate");
         stmt.setInt(5, product.getCategoryId());
         stmt.executeUpdate();
     }
