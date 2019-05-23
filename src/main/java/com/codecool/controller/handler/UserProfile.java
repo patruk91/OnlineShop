@@ -51,32 +51,26 @@ public class UserProfile {
         boolean endEdition = false;
         while(!endEdition) {
             viewer.displayUserData(user);
-            viewer.displayQuestion("Chose data to edit");
+            viewer.displayQuestion("Chose data to edit [name, last name, street, country, city, zip code]");
             String option = reader.getNotEmptyString();
             switch (option) {
                 case "name":
-                    String newName = reader.getNotEmptyString();
-                    user.setName(newName);
+                    editName();
                     break;
                 case "last name":
-                    String newLastName = reader.getNotEmptyString();
-                    user.setLastName(newLastName);
+                    editLastName();
                     break;
                 case "street":
-                    String newStreet = reader.getNotEmptyString();
-                    user.getAddres().setStreet(newStreet);
+                    editStreet();
                     break;
                 case "country":
-                    String newCountry = reader.getNotEmptyString();
-                    user.getAddres().setCountry(newCountry);
+                    editCountry();
                     break;
                 case "city":
-                    String newCity = reader.getNotEmptyString();
-                    user.getAddres().setCity(newCity);
+                    editCity();
                     break;
                 case "zip code":
-                    String newZipCodet = reader.getNotEmptyString();
-                    user.getAddres().setZipCode(newZipCodet);
+                    editZipCode();
                     break;
                 default:
                     viewer.displayError("Incorrect option");
@@ -96,6 +90,42 @@ public class UserProfile {
             }
 
         }
+    }
+
+    private void editZipCode() {
+        viewer.displayQuestion("Enter zip code");
+        String newZipCode = reader.getNotEmptyString();
+        user.getAddres().setZipCode(newZipCode);
+    }
+
+    private void editCity() {
+        viewer.displayQuestion("Enter city name");
+        String newCity = reader.getNotEmptyString();
+        user.getAddres().setCity(newCity);
+    }
+
+    private void editCountry() {
+        viewer.displayQuestion("Enter country name");
+        String newCountry = reader.getNotEmptyString();
+        user.getAddres().setCountry(newCountry);
+    }
+
+    private void editStreet() {
+        viewer.displayQuestion("Enter street name");
+        String newStreet = reader.getNotEmptyString();
+        user.getAddres().setStreet(newStreet);
+    }
+
+    private void editLastName() {
+        viewer.displayQuestion("Enter last name");
+        String newLastName = reader.getNotEmptyString();
+        user.setLastName(newLastName);
+    }
+
+    private void editName() {
+        viewer.displayQuestion("Enter name");
+        String newName = reader.getNotEmptyString();
+        user.setName(newName);
     }
 
     private void displayMyOrders() {
