@@ -52,6 +52,7 @@ public class UserProfile {
     private void editUserData() {
         boolean endEdition = false;
         while(!endEdition) {
+            viewer.clearScreen();
             viewer.displayUserData(user);
             viewer.displayQuestion("Chose data to edit [name, last name, street, country, city, zip code]");
             String option = reader.getNotEmptyString();

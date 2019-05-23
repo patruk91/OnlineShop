@@ -46,6 +46,7 @@ public class Login {
             checkIfPasswordIsCorrect(basket, login, userPassword);
         } else {
             viewer.displayError("No user by that login");
+            reader.promptEnterKey();
         }
     }
 
@@ -55,6 +56,7 @@ public class Login {
                 loginUserWithCorrectData(basket, login);
             } else {
                 viewer.displayError("Incorrect password");
+                reader.promptEnterKey();
             }
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage()
