@@ -278,6 +278,8 @@ public class ProductChooser {
         products = productDao.readProduct("name", productName, userType);
         if (isProductOnList(productName)) {
             displayProducts(userType);
+        } else {
+            view.displayError("No game by that name");
         }
     }
 
