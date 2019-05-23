@@ -1,6 +1,6 @@
 package com.codecool.view.viewer.textViewer;
 
-import com.codecool.model.Product;
+import com.codecool.model.*;
 import com.codecool.view.viewer.View;
 
 import java.util.ArrayList;
@@ -68,7 +68,45 @@ public class TextView implements View {
     }
 
     @Override
+    public void displayOrders(List<Order> orders) {
+        String[] headers = {"ID", "Date", "Status"};
+        String[][] list = new String[orders.size()][];
+        int idInTable = 1;
+        int id = 0;
+
+        for(Order order : orders){
+            String[] singleProduct = {String.valueOf(idInTable), order.getDate().toString(), order.getOrderStatus()};
+            list[id] = singleProduct;
+            idInTable++;
+            id++;
+        }
+        System.out.println(FlipTable.of(headers, list));
+
+    }
+
+    @Override
     public void displayCategories(String[] headers, String[][] table) {
         System.out.println(FlipTable.of(headers, table));
+    }
+
+    @Override
+    public void displayUserData(User user) {
+        System.out.println("Name: " + user.getName());
+        System.out.println("Last Name: " + user.getLastName());
+        System.out.println("Street: " + user.getAddres().getStreet());
+        System.out.println("City: " + user.getAddres().getCity());
+        System.out.println("Zip Code: " + user.getAddres().getZipCode());
+        System.out.println("Country: " + user.getAddres().getCountry());
+//        String[] headers = {"Name", "Last name", "Address"};
+//        String[][] list = new String[1][];
+//        Address address = user.getAddres();
+//        list[0][0] = user.getName();
+//        list[0][1] = user.getLastName();
+//        list[0][2] = address.getCountry();
+//        list[0][3] = address.getCity();
+//        list[0][4] = address.getZipCode();
+//        list[0][5] = address.getStreet();
+//
+//        System.out.println(FlipTable.of(headers, list));
     }
 }
