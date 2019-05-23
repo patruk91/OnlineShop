@@ -45,7 +45,7 @@ public class Controller {
             if(user.getId() == 0) {
                 viewer.displayMenu("e. Exit, s. Show products, li. Login, r. Register");
             } else if (user.getId() == 1) {
-                viewer.displayMenu("e. Exit, s. Edit order, lo. Log out, b. Admin Tools");
+                viewer.displayMenu("e. Exit, s. Edit order, lo. Log out, t. Admin Tools");
             } else {
                 viewer.displayMenu("e. Exit, s. Place order, lo. Log out, b. Basket, p. Profile");
             }
@@ -85,6 +85,11 @@ public class Controller {
                     UserProfile userProfile = new UserProfile(user, reader, viewer, userDao, orderDao);
                     userProfile.controller();
                     this.user = userProfile.getUser();
+                    break;
+
+                case "t":
+                    AdminTools adminTools = new AdminTools(viewer, reader);
+                    adminTools.adminController();
                     break;
                 default:
                     viewer.displayError("Please, provide correct data");
