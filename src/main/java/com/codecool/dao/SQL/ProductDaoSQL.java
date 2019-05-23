@@ -177,4 +177,18 @@ public class ProductDaoSQL implements ProductDao {
                     + "\nVendorError: " + e.getErrorCode());
         }
     }
+
+    @Override
+    public void deleteCategory(int categoryId) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement removeOrder = connection.prepareStatement(
+                     "DELETE FROM categories WHERE cid = ?")) {
+            removeOrder.setInt(1, categoryId);
+            removeOrder.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+    }
 }

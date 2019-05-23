@@ -14,4 +14,5 @@ public interface ProductDao {
     TreeMap<String, Integer> getCategories();
     void createCategory(String category);
     void updateCategory(String category, int categoryId);
+    void deleteCategory(int categoryId);
 }
