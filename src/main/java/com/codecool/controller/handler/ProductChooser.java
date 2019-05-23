@@ -201,7 +201,7 @@ public class ProductChooser {
     }
 
     private void editCategoryId(Product productToEdit) {
-        displayCategories(productDao.getCategories());
+        view.displayCategories(productDao.getCategories());
         productToEdit.setCategoryId(getCategoryId());
     }
 
@@ -262,7 +262,7 @@ public class ProductChooser {
     private void displayProductsByCategory(String userType) {
         view.clearScreen();
         TreeMap<String, Integer> categories = productDao.getCategories();
-        displayCategories(categories);
+        view.displayCategories(categories);
         String category = reader.getCategoryFromUser(categories.keySet());
         products = productDao.readProduct("categoryName", category, userType);
         displayProducts(userType);
@@ -361,19 +361,6 @@ public class ProductChooser {
             }
         }
         throw new IllegalArgumentException("No product by that name!");
-    }
-
-    private void displayCategories(TreeMap<String, Integer> categories){
-        String[] headers = {"ID", "Name"};
-        String[][] table = new String[categories.keySet().size()][2];
-        int id1 = 0;
-        int id2 = 0;
-        for (Map.Entry<String, Integer> entry : categories.entrySet()) {
-            table[id1][id2] = Integer.toString(entry.getValue());
-            table[id1][id2 + 1] = entry.getKey();
-            id1++;
-        }
-        view.displayCategories(headers, table);
     }
 
     private void displayProducts(String userType) {

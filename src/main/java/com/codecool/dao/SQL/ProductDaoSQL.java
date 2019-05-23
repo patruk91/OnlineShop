@@ -162,4 +162,19 @@ public class ProductDaoSQL implements ProductDao {
             }
         }
     }
+
+    @Override
+    public void updateCategory(String category, int categoryId) {
+        try (Connection connection = DatabaseConnection.getConntectionToDatabase();
+             PreparedStatement stmt = connection.prepareStatement(
+                     "UPDATE categories SET categoryName = ? WHERE cid = ?")) {
+            stmt.setString(1, category);
+            stmt.setInt(2, categoryId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage()
+                    + "\nSQLState: " + e.getSQLState()
+                    + "\nVendorError: " + e.getErrorCode());
+        }
+    }
 }

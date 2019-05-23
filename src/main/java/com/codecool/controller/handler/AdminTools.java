@@ -3,6 +3,9 @@ package com.codecool.controller.handler;
 import com.codecool.dao.ProductDao;
 import com.codecool.view.reader.Reader;
 import com.codecool.view.viewer.View;
+import jdk.jfr.Category;
+
+import java.util.TreeMap;
 
 public class AdminTools {
     private View view;
@@ -63,7 +66,7 @@ public class AdminTools {
                     editCategory();
                     break;
                 case 4:
-//                    removeCategory();
+                    removeCategory();
                     break;
                 default:
                     view.displayMessage("No option available!");
@@ -72,9 +75,33 @@ public class AdminTools {
 
     }
 
-    private void editCategory() {
-        view.displayCategories(productDao.getCategories());
+    private void removeCategory() {
+        
+    }
 
+    private void editCategory() {
+        TreeMap<String, Integer> categories = productDao.getCategories();
+        view.displayCategories(categories);
+        view.displayQuestion("Provide category name to edit: ");
+        String categoryToEdit = reader.getNotEmptyString().toUpperCase();
+
+        if (isCategoryExist(categories, categoryToEdit)) {
+            view.displayQuestion("Provide  new category name: ");
+            String newCategoryName = reader.getNotEmptyString().toUpperCase();
+            productDao.updateCategory(newCategoryName, categories.get(categoryToEdit));
+        } else {
+            view.displayError("Category not exist");
+        }
+
+    }
+
+    private boolean isCategoryExist(TreeMap<String, Integer> categories, String categoryToEdit) {
+        for (String categoryName : categories.keySet()) {
+            if (categoryName.equalsIgnoreCase(categoryToEdit)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void addCategory() {
