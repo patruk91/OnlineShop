@@ -7,7 +7,6 @@ import com.codecool.model.Product;
 import com.codecool.view.reader.Reader;
 import com.codecool.view.viewer.View;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -82,7 +81,7 @@ public class ProductChooser {
                 addProduct();
                 break;
             case 2:
-
+                editProduct();
                 break;
             case 3:
 
@@ -94,23 +93,45 @@ public class ProductChooser {
     }
 
     private void addProduct() {
-        view.displayMessage("Enter product name: ");
-        String productName = reader.getNotEmptyString();
-        view.displayMessage("Enter quantity: ");
-        int quantity = reader.getNumberInRange(0, Integer.MAX_VALUE);
-        view.displayMessage("Enter price: ");
-        double price = reader.getNumberInRange(0, Double.MAX_VALUE);
-        view.displayMessage("Order status: ");
-        boolean orderStatus = reader.getNotEmptyString().equalsIgnoreCase("active") ;
-
-        view.displayMessage("Category: ");
-        String category = reader.getNotEmptyString();
-
-        int categoryId = findCategoryId(category);
-
+        String productName = getProductName();
+        int quantity = getQuantity();
+        double price = getPrice();
+        boolean orderStatus = getOrderStatus();
+        int categoryId = getCategoryId();
         Product product = new Product(productName, quantity, price, orderStatus, categoryId);
         productDao.createProduct(product);
+    }
 
+    private int getCategoryId() {
+        view.displayMessage("Category: ");
+        String category = reader.getNotEmptyString();
+        return findCategoryId(category);
+    }
+
+    private boolean getOrderStatus() {
+        view.displayMessage("Order status: ");
+        return reader.getNotEmptyString().equalsIgnoreCase("active");
+    }
+
+    private double getPrice() {
+        view.displayMessage("Enter price: ");
+        return reader.getNumberInRange(0, Double.MAX_VALUE);
+    }
+
+    private int getQuantity() {
+        view.displayMessage("Enter quantity: ");
+        return reader.getNumberInRange(0, Integer.MAX_VALUE);
+    }
+
+    private String getProductName() {
+        view.displayMessage("Enter product name: ");
+        return reader.getNotEmptyString();
+    }
+
+    private void editProduct() {
+        view.displayMessage("Choose product by name: ");
+        String productName = reader.getNotEmptyString();
+        productDao.readProduct("name", productName, "admin");
 
     }
 
@@ -128,7 +149,7 @@ public class ProductChooser {
     private void displayMenu(String userType) {
         String unloggedMenu = "1. Back to main menu 2. By category 3. By name";
         String userMenu = "1. Back to main menu 2. By category 3. By name 4. Add product to basket";
-        String adminMenu = "1. Back to main menu 2. By category 3. By name 4. Edit products";
+        String adminMenu = "1. Back to main menu 2. Show by category 3. Show by name 4. Edit products";
 
         switch (userType) {
             case "anonymous":
@@ -158,16 +179,14 @@ public class ProductChooser {
 
     private void displayProductsByName(String userType) {
         view.clearScreen();
-        view.displayMessage("Enter product name: ");
-        String productName = reader.getNotEmptyString();
+        String productName = getProductName();
         products = productDao.readProduct("name", productName, userType);
         displayProducts(userType);
     }
 
     private void addProductToBasket(String userType) {
         if (userType.equals("customer")) {
-            view.displayMessage("Enter product name: ");
-            String productNameInBasket = reader.getNotEmptyString();
+            String productNameInBasket = getProductName();
             ifProductOnList(productNameInBasket);
         }
     }
