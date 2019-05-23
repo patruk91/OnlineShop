@@ -1,16 +1,21 @@
 package com.codecool.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class Order extends Basket {
+public class Order {
+    private int userId;
     private Date date;
     private int orderId;
     private String orderStatus;
+    private List<OrderDetail> orderDetails;
 
     public Order(int userId, int orderId, String orderStatus) {
-        super(userId);
+        this.userId = userId;
         this.orderId = orderId;
         this.orderStatus = orderStatus;
+        this.orderDetails = new ArrayList<>();
     }
 
     public Date getDate() {
@@ -33,8 +38,19 @@ public class Order extends Basket {
 
     public void setOrderStatus(String orderStatus){ this.orderStatus = orderStatus; }
 
-    @Override
-    public String toString() {
-        return "date: " + date + ", " + super.toString();
+    public int getUserId() {
+        return userId;
+    }
+
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void addOrderDetails(OrderDetail orderDetail) {
+        orderDetails.add(orderDetail);
+    }
+
+    public void setUserId(int userid) {
+        this.userId = userid;
     }
 }
