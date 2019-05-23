@@ -75,13 +75,11 @@ public class ProductDaoSQL implements ProductDao {
     }
 
     @Override
-    public void updateProduct(Product product, String column) {
+    public void updateProduct(Product product) {
         try (Connection connection = DatabaseConnection.getConntectionToDatabase();
              PreparedStatement stmt = connection.prepareStatement(
-                "UPDATE products set " +  column + " = ? WHERE id = ?")) {
-            updateColumn(product, column, stmt);
-            stmt.setInt(2, product.getProductId());
-            stmt.executeUpdate();
+                "UPDATE products SET name = ?, quantity = ?, price = ?, status = ?, categoryId = ? WHERE pid = ?")) {
+            updateData(product, stmt);
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage()
                     + "\nSQLState: " + e.getSQLState()
@@ -89,24 +87,14 @@ public class ProductDaoSQL implements ProductDao {
         }
     }
 
-    private void updateColumn(Product product, String column, PreparedStatement stmt) throws SQLException {
-        switch (column) {
-            case "name":
-                stmt.setString(1, product.getName());
-                break;
-            case "quantity":
-                stmt.setInt(1, product.getAmount());
-                break;
-            case "price":
-                stmt.setDouble(1, product.getPrice());
-                break;
-            case "status":
-                stmt.setBoolean(1, product.isStatus());
-                break;
-            case "categoryId":
-                stmt.setInt(1, product.getProductId());
-                break;
-        }
+    private void updateData(Product product, PreparedStatement stmt) throws SQLException {
+        stmt.setString(1, product.getName());
+        stmt.setInt(2, product.getAmount());
+        stmt.setDouble(3, product.getPrice());
+        stmt.setString(4, product.isStatus() ? "active" : "deactivate");
+        stmt.setInt(5, product.getCategoryId());
+        stmt.setInt(6, product.getProductId());
+        stmt.executeUpdate();
     }
 
     @Override
