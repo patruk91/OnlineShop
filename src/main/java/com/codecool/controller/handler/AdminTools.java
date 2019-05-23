@@ -2,23 +2,27 @@ package com.codecool.controller.handler;
 
 import com.codecool.dao.ProductDao;
 import com.codecool.model.Product;
+import com.codecool.dao.OrderDao;
+import com.codecool.model.Order;
 import com.codecool.view.reader.Reader;
 import com.codecool.view.viewer.View;
-import jdk.jfr.Category;
 
 import java.util.List;
 import java.util.TreeMap;
 
+
 public class AdminTools {
     private View view;
     private Reader reader;
+    private OrderDao orderDao;
     private ProductDao productDao;
     TreeMap<String, Integer> categories; ;
 
-    public AdminTools(View view, Reader reader, ProductDao productDao) {
+    public AdminTools(View view, Reader reader, ProductDao productDao, OrderDao orderDao) {
         this.view = view;
         this.reader = reader;
         this.productDao = productDao;
+        this.orderDao = orderDao;
     }
 
     public void adminController() {
@@ -26,9 +30,10 @@ public class AdminTools {
     }
 
     private void displayAdminMenu() {
-        boolean backToMenu = false;
         final int START = 1;
         final int END = 3;
+        
+        boolean backToMenu = false;
         while (!backToMenu) {
             view.displayMenu("1. Back to main menu 2. Manage categories 3. Manage orders\n");
             view.displayQuestion("Choose menu option");
@@ -41,13 +46,27 @@ public class AdminTools {
                     manageCategories();
                     break;
                 case 3:
-//                    manageOrders();
+                    manageOrders();
                     break;
                 default:
                     view.displayMessage("No option available!");
             }
         }
+    }
 
+    private void manageOrders() {
+        List<Order> listOfOrders = orderDao.readOrder();
+        if(listOfOrders.size() != 0) {
+            view.displayOrders(listOfOrders);
+        } else {
+            view.displayMessage("No orders to display");
+        }
+        view.displayQuestion("Enter order id to change status");
+        int orderId = reader.getNumberInRange(1, listOfOrders.size());
+        Order order = listOfOrders.get(orderId - 1);
+        view.displayQuestion("Enter new order status");
+        order.setOrderStatus(reader.getNotEmptyString());
+        orderDao.updateOder(order);
     }
 
     private void manageCategories() {
