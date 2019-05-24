@@ -48,22 +48,6 @@ class InputValidatorTest {
     }
 
     @Test
-    public void testReturnTrueWithProperInput() {
-        InputValidator inputValidator = new InputValidator();
-        int START = 1;
-        int END = 5;
-        assertTrue(inputValidator.isInRange(3, START, END));
-    }
-
-    @Test
-    public void testReturnFalseWithInputOverRange() {
-        InputValidator inputValidator = new InputValidator();
-        int START = 1;
-        int END = 5;
-        assertFalse(inputValidator.isInRange(6, START, END));
-    }
-
-    @Test
     void testIsNumberReturnFalseForString() {
         InputValidator inputValidator = new InputValidator();
         assertFalse(inputValidator.isNumber("string"));
@@ -127,10 +111,50 @@ class InputValidatorTest {
     }
 
     @Test
-    public void testReturnFalseWithInputUnderRange() {
+    public void testReturnFalseWithIntInputUnderRange() {
         InputValidator inputValidator = new InputValidator();
         int START = 1;
         int END = 5;
         assertFalse(inputValidator.isInRange(-1, START, END));
+    }
+
+    @Test
+    public void testReturnTrueWithIntProperInput() {
+        InputValidator inputValidator = new InputValidator();
+        int START = 1;
+        int END = 5;
+        assertTrue(inputValidator.isInRange(3, START, END));
+    }
+
+    @Test
+    public void testReturnFalseWithIntInputOverRange() {
+        InputValidator inputValidator = new InputValidator();
+        int START = 1;
+        int END = 5;
+        assertFalse(inputValidator.isInRange(6, START, END));
+    }
+
+    @Test
+    public void testReturnFalseWithDoubleInputUnderRange() {
+        InputValidator inputValidator = new InputValidator();
+        double START = 1.0;
+        double END = 5.0;
+        assertFalse(inputValidator.isInRange(-1.3, START, END));
+    }
+
+    @Test
+    public void testReturnTrueWithDoubleProperInput() {
+        InputValidator inputValidator = new InputValidator();
+        double START = 1.0;
+        double END = 5.0;
+        assertTrue(inputValidator.isInRange(3.5, START, END));
+    }
+
+    @Test
+    public void testReturnFalseWithDoubleInputOverRange() {
+        InputValidator inputValidator = new InputValidator();
+        double START = 1.0;
+        double END = 5.0;
+        assertFalse(inputValidator.isInRange(6.3, START, END));
     }
 }
